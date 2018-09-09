@@ -183,7 +183,7 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
     }
     return res
 }
-
+//
 /**
  * Средняя
  *

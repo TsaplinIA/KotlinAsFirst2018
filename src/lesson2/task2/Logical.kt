@@ -91,6 +91,7 @@ fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
             Wall[NowI] = 0
         }
     }
+    //
 
 
     return CountWin >= 2

@@ -79,7 +79,7 @@ fun angleInRadian(grad: Int, min: Int, sec: Int): Double {
 }
 
 
-
+//
 /**
  * Тривиальная
  *
