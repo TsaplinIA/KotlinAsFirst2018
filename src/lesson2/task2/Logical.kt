@@ -17,7 +17,13 @@ fun pointInsideCircle(x: Double, y: Double, x0: Double, y0: Double, r: Double) =
  * Четырехзначное число назовем счастливым, если сумма первых двух ее цифр равна сумме двух последних.
  * Определить, счастливое ли заданное число, вернуть true, если это так.
  */
-fun isNumberHappy(number: Int): Boolean = TODO()
+fun isNumberHappy(number: Int): Boolean {
+    val a: Int = number / 1000
+    val b: Int = (number / 100) % 10
+    val c: Int = (number % 100) / 10
+    val d: Int = number % 10
+    return a + b == c + d
+}
 
 /**
  * Простая
@@ -26,7 +32,9 @@ fun isNumberHappy(number: Int): Boolean = TODO()
  * Определить, угрожают ли они друг другу. Вернуть true, если угрожают.
  * Считать, что ферзи не могут загораживать друг друга.
  */
-fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean = TODO()
+fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean {
+    return x1 == x2 || y1 == y2 || x1 + y1 == x2 + y2 || y1 - x1 == y2 - x2
+}
 
 
 /**
@@ -35,7 +43,12 @@ fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean = TODO()
  * Дан номер месяца (от 1 до 12 включительно) и год (положительный).
  * Вернуть число дней в этом месяце этого года по григорианскому календарю.
  */
-fun daysInMonth(month: Int, year: Int): Int = TODO()
+fun daysInMonth(month: Int, year: Int): Int {
+    var Vis: Int = 0
+    var arr = arrayOf(0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+    if (((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) && month == 2) Vis = 1
+    return arr[month] + Vis
+}
 
 /**
  * Средняя
@@ -45,7 +58,11 @@ fun daysInMonth(month: Int, year: Int): Int = TODO()
  * Вернуть true, если утверждение верно
  */
 fun circleInside(x1: Double, y1: Double, r1: Double,
-                 x2: Double, y2: Double, r2: Double): Boolean = TODO()
+                 x2: Double, y2: Double, r2: Double): Boolean {
+
+    return (sqr(x1 - x2) + sqr(y1 - y2) <= sqr(r1 - r2) && r1 <= r2)
+
+}
 
 /**
  * Средняя
@@ -56,4 +73,25 @@ fun circleInside(x1: Double, y1: Double, r1: Double,
  * кирпич 4 х 4 х 4 пройдёт через отверстие 4 х 4.
  * Вернуть true, если кирпич пройдёт
  */
-fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean = TODO()
+fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
+    var Brick = arrayOf(0, a, b, c)
+    var Wall = arrayOf(0, r, s)
+    var NowI: Int = 0
+    var CountWin: Int = 0
+    for (i in 1..3) {
+        var min = 2147483647
+        for (j in 1..2) {
+            if (Brick[i] <= Wall[j] && Wall[j] < min) {
+                NowI = j
+                min = Wall[j]
+            }
+        }
+        if (min < 2147483647) {
+            CountWin++
+            Wall[NowI] = 0
+        }
+    }
+
+
+    return CountWin >= 2
+}
