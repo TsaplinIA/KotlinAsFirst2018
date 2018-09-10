@@ -32,9 +32,9 @@ fun isNumberHappy(number: Int): Boolean {
  * Определить, угрожают ли они друг другу. Вернуть true, если угрожают.
  * Считать, что ферзи не могут загораживать друг друга.
  */
-fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean {
-    return x1 == x2 || y1 == y2 || x1 + y1 == x2 + y2 || y1 - x1 == y2 - x2
-}
+fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean =
+        x1 == x2 || y1 == y2 || x1 + y1 == x2 + y2 || y1 - x1 == y2 - x2
+
 
 
 /**
@@ -44,10 +44,10 @@ fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean {
  * Вернуть число дней в этом месяце этого года по григорианскому календарю.
  */
 fun daysInMonth(month: Int, year: Int): Int {
-    var Vis: Int = 0
-    var arr = arrayOf(0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
-    if (((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) && month == 2) Vis = 1
-    return arr[month] + Vis
+    var vis: Int = 0
+    val arr = arrayOf(0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+    if (((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) && month == 2) vis = 1
+    return arr[month] + vis
 }
 
 /**
@@ -58,11 +58,8 @@ fun daysInMonth(month: Int, year: Int): Int {
  * Вернуть true, если утверждение верно
  */
 fun circleInside(x1: Double, y1: Double, r1: Double,
-                 x2: Double, y2: Double, r2: Double): Boolean {
-
-    return (sqr(x1 - x2) + sqr(y1 - y2) <= sqr(r1 - r2) && r1 <= r2)
-
-}
+                 x2: Double, y2: Double, r2: Double): Boolean =
+        (sqr(x1 - x2) + sqr(y1 - y2) <= sqr(r1 - r2) && r1 <= r2)
 
 /**
  * Средняя
@@ -74,25 +71,23 @@ fun circleInside(x1: Double, y1: Double, r1: Double,
  * Вернуть true, если кирпич пройдёт
  */
 fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
-    var Brick = arrayOf(0, a, b, c)
-    var Wall = arrayOf(0, r, s)
-    var NowI: Int = 0
+    val brick = arrayOf(0, a, b, c)
+    var wall = arrayOf(0, r, s)
+    var nowI: Int = 0
     var CountWin: Int = 0
     for (i in 1..3) {
-        var min = 2147483647
+
+        var min: Int = Int.MAX_VALUE
         for (j in 1..2) {
-            if (Brick[i] <= Wall[j] && Wall[j] < min) {
-                NowI = j
-                min = Wall[j]
+            if (brick[i] <= wall[j] && wall[j] < min) {
+                nowI = j
+                min = wall[j]
             }
         }
-        if (min < 2147483647) {
+        if (min < Int.MAX_VALUE) {
             CountWin++
-            Wall[NowI] = 0
+            wall[nowI] = 0
         }
     }
-    //
-
-
     return CountWin >= 2
 }

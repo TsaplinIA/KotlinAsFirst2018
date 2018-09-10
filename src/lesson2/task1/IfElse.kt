@@ -62,17 +62,14 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * Мой возраст. Для заданного 0 < n < 200, рассматриваемого как возраст человека,
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
-fun ageDescription(age: Int): String  {
-    var AgeName : String
-    if((age % 100 < 21 && age % 100 > 9) || age % 10 == 0 || age % 10 > 4) {
-        AgeName = "лет"
-    }else if(age % 10 == 1){
-        AgeName = "год"
-    }else{
-        AgeName = "года"
+fun ageDescription(age: Int): String {
+    var ageName : String
+    ageName = when {
+        (age % 100 < 21 && age % 100 > 9) || age % 10 == 0 || age % 10 > 4 -> "лет"
+        age % 10 == 1 -> "год"
+        else -> "года"
     }
-
-    return "$age $AgeName"
+    return "$age $ageName"
 }
 
 /**
@@ -84,18 +81,14 @@ fun ageDescription(age: Int): String  {
  */
 fun timeForHalfWay(t1: Double, v1: Double,
                    t2: Double, v2: Double,
-                   t3: Double, v3: Double): Double
-{
+                   t3: Double, v3: Double): Double {
     val halfS: Double = (t1 * v1 + t2 * v2 + t3 * v3) / 2
     var time: Double
-    if(halfS > t1 * v1 + t2 * v2){
-        time = t1 + t2 + (halfS - t1 * v1 - t2 * v2) / v3
-    }else if(halfS > t1 * v1){
-        time = t1 + (halfS - t1 * v1) / v2
-    }else {
-        time = halfS / v1
+    time = when {
+        halfS > t1 * v1 + t2 * v2 -> t1 + t2 + (halfS - t1 * v1 - t2 * v2) / v3
+        halfS > t1 * v1 -> t1 + (halfS - t1 * v1) / v2
+        else -> halfS / v1
     }
-
     return time
 }
 
@@ -110,8 +103,7 @@ fun timeForHalfWay(t1: Double, v1: Double,
  */
 fun whichRookThreatens(kingX: Int, kingY: Int,
                        rookX1: Int, rookY1: Int,
-                       rookX2: Int, rookY2: Int): Int
-{
+                       rookX2: Int, rookY2: Int): Int {
     var danger: Int = 0
     if (kingX == rookX1 || kingY == rookY1) {
         danger++
@@ -159,25 +151,15 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    var arr = arrayOf(a, b, c)
-    var c: Double
+    val arr = arrayOf(a, b, c)
+    arr.sort()
     var res: Int = 0
-    for(i in 1..2){
-        if (arr[i - 1] > arr[i]) {
-            c = arr[i]
-            arr[i] = arr[i - 1]
-            arr[i - 1] = c
-        }
+    val temp = arr[0] * arr[0] + arr[1] * arr[1]
+    res = when {
+        temp > arr[2] * arr[2] -> 0
+        temp < arr[2] * arr[2] -> 2
+        else -> 1
     }
-    c = arr[0] * arr[0] + arr[1] * arr[1]
-    if (c > arr[2] * arr[2]) {
-        res = 0
-    } else if (c < arr[2] * arr[2]) {
-        res = 2
-    } else if (c == arr[2] * arr[2]) {
-        res = 1
-    }
-
     if (arr[2] > arr[0] + arr[1]) {
         res = -1
     }
@@ -195,9 +177,12 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
     var startx: Int = 0
     var endx: Int = 0
-    if (c > a) {startx = c} else {startx = a}
-    if (b > d) {endx = d} else {endx = b}
-    if (c == b || a == d) {return 0}
-    if (c > b || a > d) {return -1} else {return endx - startx}
+    startx = maxOf(c, a)
+    endx = minOf(b, d)
+    return when {
+        c == b || a == d -> 0
+        c > b || a > d -> -1
+        else -> endx - startx
 
+    }
 }

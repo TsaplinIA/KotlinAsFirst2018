@@ -48,7 +48,14 @@ fun quadraticRootProduct(a: Double, b: Double, c: Double): Double {
  * Пример главной функции
  */
 fun main(args: Array<String>) {
-    println(PI)
+    val a: Int = 4
+    val b: Int = 0
+    val c: Int = 10
+    val arr = arrayOf(a, b, c)
+    arr.sort()
+    print(arr[0])
+    print(arr[1])
+    print(arr[2])
 }
 
 /**
@@ -66,7 +73,8 @@ fun seconds(hours: Int, minutes: Int, seconds: Int): Int = (hours * 3600 + minut
  * Определить длину того же отрезка в метрах (в данном случае 18.98).
  * 1 сажень = 3 аршина = 48 вершков, 1 вершок = 4.445 см.
  */
-fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double = (sagenes * 48 + arshins * 16 + vershoks).toDouble() * 0.04445
+fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double =
+        (sagenes * 48 + arshins * 16 + vershoks).toDouble() * 0.04445
 
 /**
  * Тривиальная
@@ -74,9 +82,9 @@ fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double = (sagenes
  * Пользователь задает угол в градусах, минутах и секундах (например, 36 градусов 14 минут 35 секунд).
  * Вывести значение того же угла в радианах (например, 0.63256).
  */
-fun angleInRadian(grad: Int, min: Int, sec: Int): Double {
-    return ((grad.toDouble() + min.toDouble() / 60 + sec.toDouble() / 3600) / 180 * PI)
-}
+fun angleInRadian(grad: Int, min: Int, sec: Int): Double =
+    ((grad.toDouble() + min.toDouble() / 60 + sec.toDouble() / 3600) / 180 * PI)
+
 
 
 //
@@ -103,9 +111,9 @@ fun thirdDigit(number: Int): Int = ((number % 1000) / 100)
  * прибыл на станцию назначения в h2 часов m2 минут того же дня (например в 13:01).
  * Определите время поезда в пути в минутах (в данном случае 216).
  */
-fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minutesArrive: Int): Int {
-    return (hoursArrive - hoursDepart) * 60 + (minutesArrive - minutesDepart)
-}
+fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minutesArrive: Int): Int =
+    (hoursArrive - hoursDepart) * 60 + (minutesArrive - minutesDepart)
+
 
 /**
  * Простая
