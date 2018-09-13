@@ -72,9 +72,9 @@ fun circleInside(x1: Double, y1: Double, r1: Double,
  */
 fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
     val brick = arrayOf(0, a, b, c)
-    var wall = arrayOf(0, r, s)
+    val wall = arrayOf(0, r, s)
     var nowI: Int = 0
-    var CountWin: Int = 0
+    var countWin: Int = 0
     for (i in 1..3) {
 
         var min: Int = Int.MAX_VALUE
@@ -85,9 +85,9 @@ fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
             }
         }
         if (min < Int.MAX_VALUE) {
-            CountWin++
+            countWin++
             wall[nowI] = 0
         }
     }
-    return CountWin >= 2
+    return countWin >= 2
 }
