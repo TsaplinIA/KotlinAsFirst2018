@@ -1,6 +1,7 @@
 @file:Suppress("UNUSED_PARAMETER")
 package lesson3.task1
 
+import java.lang.Math.pow
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.sqrt
@@ -161,7 +162,7 @@ fun maxDivisor(n: Int): Int {
 fun isCoPrime(m: Int, n: Int): Boolean {
 
     if (isPrime(m) || isPrime(n)) {
-        return !(m % n == 0 || n % m == 0)
+        return !((m % n == 0 || n % m == 0) && n != 1 && m != 1)
     }
     for (i in 2..minOf(n, m) / 2) {
         if (m % i == 0 && n % i == 0) return false
@@ -217,35 +218,18 @@ fun collatzSteps(x: Int): Int {
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
 fun sin(x: Double, eps: Double): Double {
-    var res = 0.0
-    var coef = 1
-    var k = 1
-    val temp: Int = abs((x / PI * 2).toInt())
-    if (abs((x / PI * 2)) - temp < eps) {
-        return when {
-            temp % 4 == 1 -> 1.0
-            temp % 4 == 3 -> -1.0
-            else -> 0.0
-        }
-    }
-
-    while (pow(x, coef) / factorial(coef) >= eps) {
-        res += pow(x, coef) / factorial(coef) * k
-        coef += 2
+    var temp: Int = 1
+    val x2: Double = x % (2 * PI)
+    var res: Double = 0.0
+    var k: Int = 1
+    while (abs(pow(x2, temp.toDouble()) / factorial(temp)) >= eps) {
+        res += pow(x2, temp.toDouble()) / factorial(temp) * k
+        temp += 2
         k *= -1
     }
-    res += (pow(x, coef) / factorial(coef) * k)
     return res
 }
 
-fun pow(a: Double, b: Int): Double {
-    var res = 1.0
-    if (b == 0) return 1.0
-    for (i in 1..b) {
-        res *= a
-    }
-    return res
-}
 /**
  * Средняя
  *
@@ -254,24 +238,25 @@ fun pow(a: Double, b: Int): Double {
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
 fun cos(x: Double, eps: Double): Double {
+    val x2 = x % (2 * PI)
     var res = 1.0
     var coef = 2
     var k: Int = -1
-    val xNow: Double = x
-    val temp: Int = abs((x / PI * 2).toInt())
-    if (abs((x / PI * 2)) - temp < eps) {
+    val xNow: Double = x2
+    val temp: Int = abs((x2 / PI * 2).toInt())
+    if (abs((x2 / PI * 2)) - temp < eps) {
         return when {
             temp % 4 == 0 -> 1.0
             temp % 4 == 2 -> -1.0
             else -> 0.0
         }
     }
-    while (pow(xNow, coef) / factorial(coef) >= eps) {
-        res += pow(xNow, coef) / factorial(coef) * k
+    while (pow(xNow, coef.toDouble()) / factorial(coef) >= eps) {
+        res += pow(xNow, coef.toDouble()) / factorial(coef) * k
         coef += 2
         k *= -1
     }
-    res += (pow(xNow, coef) / factorial(coef) * k)
+    res += (pow(xNow, coef.toDouble()) / factorial(coef) * k)
     return res
 }
 
@@ -292,7 +277,7 @@ fun revert(n: Int): Int {
         n2 /= 10
     }
     for (i in digitN downTo 1) {
-        n2 += myNumber[i] * pow(10.0, digitN - i).toInt()
+        n2 += myNumber[i] * pow(10.0, (digitN - i).toDouble()).toInt()
     }
     return n2
 }
@@ -369,7 +354,7 @@ fun squareSequenceDigit(n: Int): Int {
             temp1 -= digitNumber(temp3)
             temp3 = 0
         } else {
-            numberNow = (temp3 / pow(10.0, digitNumber(temp3) - temp1)).toInt() % 10
+            numberNow = (temp3 / pow(10.0, (digitNumber(temp3) - temp1).toDouble())).toInt() % 10
             temp1 = 0
         }
     }
@@ -399,7 +384,7 @@ fun fibSequenceDigit(n: Int): Int {
             temp1 -= digitNumber(temp3)
             temp3 = 0
         } else {
-            numberNow = (temp3 / pow(10.0, digitNumber(temp3) - temp1)).toInt() % 10
+            numberNow = (temp3 / pow(10.0, (digitNumber(temp3) - temp1).toDouble())).toInt() % 10
             temp1 = 0
         }
     }
