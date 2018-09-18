@@ -251,20 +251,6 @@ fun cos(x: Double, eps: Double): Double {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-/*fun revert(n: Int): Int {
-    val myNumber: MutableList<Int> = mutableListOf(0)
-    var n2: Int = n
-    val digitN: Int = digitNumber(n)
-    if (n2 == 0) return 0
-    while (n2 != 0) {
-        myNumber.add(n2 % 10)
-        n2 /= 10
-    }
-    for (i in digitN downTo 1) {
-        n2 += myNumber[i] * pow(10.0, (digitN - i).toDouble()).toInt()
-    }
-    return n2
-}*/
 fun revert(n: Int): Int {
     var n2 = n
     var res = 0
@@ -310,8 +296,6 @@ fun hasDifferentDigits(n: Int): Boolean {
     }
     return false
 }
-
-//fun sqr(x: Int): Int = x * x
 
 fun searchNumber(n: Int, func: (Int) -> (Int)): Int {
     var temp1 = n
