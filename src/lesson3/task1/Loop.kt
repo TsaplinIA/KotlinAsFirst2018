@@ -1,6 +1,7 @@
-@file:Suppress("UNUSED_PARAMETER")
+@file:Suppress("UNUSED_PARAMETER", "UNREACHABLE_CODE")
 package lesson3.task1
 
+import lesson1.task1.sqr
 import java.lang.Math.pow
 import kotlin.math.PI
 import kotlin.math.abs
@@ -73,7 +74,7 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  */
 fun digitNumber(n: Int): Int {
     var count = 0
-    var n2: Int = n
+    var n2 = n
     if (n == 0) count++
     while (n2 != 0) {
         count++
@@ -106,24 +107,17 @@ fun fib(n: Int): Int {
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int {
-    var m2: Int = m
-    var n2: Int = n
-    var res = 1
-    while (n2 != 1) {
-        val temp: Int = minDivisor(n2)
-        if (n2 % temp == 0) n2 /= temp
-        if (m2 % temp == 0) m2 /= temp
-        res *= temp
-    }
-    while(m2 != 1) {
-        val temp: Int = minDivisor(m2)
-        if (n2 % temp == 0) n2 /= temp
-        if (m2 % temp == 0) m2 /= temp
-        res *= temp
-    }
-    return res
+
+fun gcd(a: Int, b: Int): Int {
+    return if (b == 0)
+        a
+    else
+        gcd(b, a % b)
 }
+
+
+fun lcm(m: Int, n: Int): Int = (m * n) / gcd(m, n)
+
 
 /**
  * Простая
@@ -159,16 +153,7 @@ fun maxDivisor(n: Int): Int {
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean {
-
-    if (isPrime(m) || isPrime(n)) {
-        return !((m % n == 0 || n % m == 0) && n != 1 && m != 1)
-    }
-    for (i in 2..minOf(n, m) / 2) {
-        if (m % i == 0 && n % i == 0) return false
-    }
-    return true
-}
+fun isCoPrime(m: Int, n: Int): Boolean = gcd(m, n) == 1
 
 /**
  * Простая
@@ -179,7 +164,7 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
     for (k in sqrt(m.toDouble()).toInt()..sqrt(n.toDouble()).toInt()) {
-        if (k * k >= m && k * k <= n) return true
+        if (k * k in m..n) return true
     }
     return false
 }
@@ -202,7 +187,7 @@ fun squareBetweenExists(m: Int, n: Int): Boolean {
  */
 fun collatzSteps(x: Int): Int {
     var countSteps = 0
-    var x2: Int = x
+    var x2 = x
     while (x2 != 1) {
         countSteps++
         if (x2 % 2 == 0) x2 /= 2 else x2 = x2 * 3 + 1
@@ -218,10 +203,10 @@ fun collatzSteps(x: Int): Int {
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
 fun sin(x: Double, eps: Double): Double {
-    var temp: Int = 1
-    val x2: Double = x % (2 * PI)
-    var res: Double = 0.0
-    var k: Int = 1
+    var temp = 1
+    val x2 = x % (2 * PI)
+    var res = 0.0
+    var k = 1
     while (abs(pow(x2, temp.toDouble()) / factorial(temp)) >= eps) {
         res += pow(x2, temp.toDouble()) / factorial(temp) * k
         temp += 2
@@ -241,8 +226,7 @@ fun cos(x: Double, eps: Double): Double {
     val x2 = x % (2 * PI)
     var res = 1.0
     var coef = 2
-    var k: Int = -1
-    val xNow: Double = x2
+    var k = -1
     val temp: Int = abs((x2 / PI * 2).toInt())
     if (abs((x2 / PI * 2)) - temp < eps) {
         return when {
@@ -251,12 +235,12 @@ fun cos(x: Double, eps: Double): Double {
             else -> 0.0
         }
     }
-    while (pow(xNow, coef.toDouble()) / factorial(coef) >= eps) {
-        res += pow(xNow, coef.toDouble()) / factorial(coef) * k
+    while (pow(x2, coef.toDouble()) / factorial(coef) >= eps) {
+        res += pow(x2, coef.toDouble()) / factorial(coef) * k
         coef += 2
         k *= -1
     }
-    res += (pow(xNow, coef.toDouble()) / factorial(coef) * k)
+    res += (pow(x2, coef.toDouble()) / factorial(coef) * k)
     return res
 }
 
@@ -267,7 +251,7 @@ fun cos(x: Double, eps: Double): Double {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun revert(n: Int): Int {
+/*fun revert(n: Int): Int {
     val myNumber: MutableList<Int> = mutableListOf(0)
     var n2: Int = n
     val digitN: Int = digitNumber(n)
@@ -280,6 +264,16 @@ fun revert(n: Int): Int {
         n2 += myNumber[i] * pow(10.0, (digitN - i).toDouble()).toInt()
     }
     return n2
+}*/
+fun revert(n: Int): Int {
+    var n2 = n
+    var res = 0
+    while (n2 != 0) {
+        res *= 10
+        res += n2 % 10
+        n2 /= 10
+    }
+    return res
 }
 
 /**
@@ -291,21 +285,7 @@ fun revert(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean {
-    val myNumber: MutableList<Int> = mutableListOf(0)
-    var n2: Int = n
-    val digitN: Int = digitNumber(n)
-    var temp = 0
-    if (digitN == 1) return true
-    while (n2 != 0) {
-        myNumber.add(n2 % 10)
-        n2 /= 10
-    }
-    for (i in 1..digitN / 2) {
-        if(myNumber[i] != myNumber[digitN - i + 1]) temp++
-    }
-    return temp == 0
-}
+fun isPalindrome(n: Int): Boolean = n == revert(n)
 
 /**
  * Средняя
@@ -316,19 +296,42 @@ fun isPalindrome(n: Int): Boolean {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun hasDifferentDigits(n: Int): Boolean {
-    val myNumber: MutableList<Int> = mutableListOf(0)
-    var n2: Int = n
-    val digitN: Int = digitNumber(n)
-    var temp = 0
-    if (digitN == 1) return false
+    var last = n % 10
+    var n2 = n / 10
+    if (digitNumber(n) == 1) {
+        return false
+    }
     while (n2 != 0) {
-        myNumber.add(n2 % 10)
+        if (last != n2 % 10) {
+            return true
+        }
+        last = n2 % 10
         n2 /= 10
     }
-    for (i in 2..digitN) {
-        if (myNumber[i] != myNumber[i - 1]) temp++
+    return false
+}
+
+//fun sqr(x: Int): Int = x * x
+
+fun searchNumber(n: Int, func: (Int) -> (Int)): Int {
+    var temp1 = n
+    var temp2 = 0
+    var temp3 = 0
+    var numberNow = 0
+    while (temp1 != 0) {
+        if (temp3 == 0) {
+            temp2++
+            temp3 = func(temp2)
+        }
+        if (temp1 > digitNumber(temp3)) {
+            temp1 -= digitNumber(temp3)
+            temp3 = 0
+        } else {
+            numberNow = (temp3 / pow(10.0, (digitNumber(temp3) - temp1).toDouble())).toInt() % 10
+            temp1 = 0
+        }
     }
-    return temp != 0
+    return numberNow
 }
 
 /**
@@ -340,26 +343,8 @@ fun hasDifferentDigits(n: Int): Boolean {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int {
-    var temp1: Int = n
-    var temp2: Int = 0
-    var temp3: Int = 0
-    var numberNow: Int = 0
-    while (temp1 != 0) {
-        if (temp3 == 0) {
-            temp2++
-            temp3 = temp2 * temp2
-        }
-        if (temp1 > digitNumber(temp3)){
-            temp1 -= digitNumber(temp3)
-            temp3 = 0
-        } else {
-            numberNow = (temp3 / pow(10.0, (digitNumber(temp3) - temp1).toDouble())).toInt() % 10
-            temp1 = 0
-        }
-    }
-    return numberNow
-}
+fun squareSequenceDigit(n: Int): Int = searchNumber(n, ::sqr)
+
 
 /**
  * Сложная
@@ -370,23 +355,5 @@ fun squareSequenceDigit(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int {
-    var temp1: Int = n
-    var temp2: Int = 0
-    var temp3: Int = 0
-    var numberNow: Int = 0
-    while (temp1 != 0) {
-        if (temp3 == 0) {
-            temp2++
-            temp3 = fib(temp2)
-        }
-        if (temp1 > digitNumber(temp3)){
-            temp1 -= digitNumber(temp3)
-            temp3 = 0
-        } else {
-            numberNow = (temp3 / pow(10.0, (digitNumber(temp3) - temp1).toDouble())).toInt() % 10
-            temp1 = 0
-        }
-    }
-    return numberNow
-}
+fun fibSequenceDigit(n: Int): Int = searchNumber(n, ::fib)
+

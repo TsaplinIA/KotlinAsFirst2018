@@ -1,6 +1,10 @@
 @file:Suppress("UNUSED_PARAMETER")
+
 package lesson1.task1
 
+import lesson3.task1.digitNumber
+import lesson3.task1.factorial
+import java.lang.Math.pow
 import kotlin.math.*
 
 /**
@@ -48,14 +52,6 @@ fun quadraticRootProduct(a: Double, b: Double, c: Double): Double {
  * Пример главной функции
  */
 fun main(args: Array<String>) {
-    val a: Int = 4
-    val b: Int = 0
-    val c: Int = 10
-    val arr = arrayOf(a, b, c)
-    arr.sort()
-    print(arr[0])
-    print(arr[1])
-    print(arr[2])
 }
 
 /**
@@ -74,7 +70,7 @@ fun seconds(hours: Int, minutes: Int, seconds: Int): Int = (hours * 3600 + minut
  * 1 сажень = 3 аршина = 48 вершков, 1 вершок = 4.445 см.
  */
 fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double =
-        (sagenes * 48 + arshins * 16 + vershoks).toDouble() * 0.04445
+        (sagenes * 48 + arshins * 16 + vershoks) * 0.04445
 
 /**
  * Тривиальная
@@ -83,8 +79,7 @@ fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double =
  * Вывести значение того же угла в радианах (например, 0.63256).
  */
 fun angleInRadian(grad: Int, min: Int, sec: Int): Double =
-    ((grad.toDouble() + min.toDouble() / 60 + sec.toDouble() / 3600) / 180 * PI)
-
+        ((grad.toDouble() + min.toDouble() / 60 + sec.toDouble() / 3600) / 180 * PI)
 
 
 //
@@ -94,7 +89,7 @@ fun angleInRadian(grad: Int, min: Int, sec: Int): Double =
  * Найти длину отрезка, соединяющего точки на плоскости с координатами (x1, y1) и (x2, y2).
  * Например, расстояние между (3, 0) и (0, 4) равно 5
  */
-fun trackLength(x1: Double, y1: Double, x2: Double, y2: Double): Double = sqrt(sqr(abs(x1 - x2)) + sqr(abs(y1 - y2)))
+fun trackLength(x1: Double, y1: Double, x2: Double, y2: Double): Double = sqrt(sqr(x1 - x2) + sqr(y1 - y2))
 
 /**
  * Простая
@@ -112,7 +107,7 @@ fun thirdDigit(number: Int): Int = ((number % 1000) / 100)
  * Определите время поезда в пути в минутах (в данном случае 216).
  */
 fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minutesArrive: Int): Int =
-    (hoursArrive - hoursDepart) * 60 + (minutesArrive - minutesDepart)
+        (hoursArrive - hoursDepart) * 60 + (minutesArrive - minutesDepart)
 
 
 /**
@@ -123,7 +118,7 @@ fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minute
  * Например, 100 рублей под 10% годовых превратятся в 133.1 рубля
  */
 fun accountInThreeYears(initial: Int, percent: Int): Double {
-    val impact: Double = 1 + percent.toDouble() / 100
+    val impact = 1 + percent.toDouble() / 100
     return initial.toDouble() * impact * impact * impact
 }
 
@@ -133,4 +128,4 @@ fun accountInThreeYears(initial: Int, percent: Int): Double {
  * Пользователь задает целое трехзначное число (например, 478).
  * Необходимо вывести число, полученное из заданного перестановкой цифр в обратном порядке (например, 874).
  */
-fun numberRevert(number: Int): Int = (number % 100) + (number / 100).toInt() + (number % 10) * 99
+fun numberRevert(number: Int): Int = (number % 100) + number / 100 + (number % 10) * 99

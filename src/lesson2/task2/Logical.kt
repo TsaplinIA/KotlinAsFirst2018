@@ -18,10 +18,10 @@ fun pointInsideCircle(x: Double, y: Double, x0: Double, y0: Double, r: Double) =
  * Определить, счастливое ли заданное число, вернуть true, если это так.
  */
 fun isNumberHappy(number: Int): Boolean {
-    val a: Int = number / 1000
-    val b: Int = (number / 100) % 10
-    val c: Int = (number % 100) / 10
-    val d: Int = number % 10
+    val a = number / 1000
+    val b = (number / 100) % 10
+    val c = (number % 100) / 10
+    val d = number % 10
     return a + b == c + d
 }
 
@@ -44,7 +44,7 @@ fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean =
  * Вернуть число дней в этом месяце этого года по григорианскому календарю.
  */
 fun daysInMonth(month: Int, year: Int): Int {
-    var vis: Int = 0
+    var vis = 0
     val arr = arrayOf(0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
     if (((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) && month == 2) vis = 1
     return arr[month] + vis
@@ -73,10 +73,9 @@ fun circleInside(x1: Double, y1: Double, r1: Double,
 fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
     val brick = arrayOf(0, a, b, c)
     val wall = arrayOf(0, r, s)
-    var nowI: Int = 0
-    var countWin: Int = 0
+    var nowI = 0
+    var countWin = 0
     for (i in 1..3) {
-
         var min: Int = Int.MAX_VALUE
         for (j in 1..2) {
             if (brick[i] <= wall[j] && wall[j] < min) {
