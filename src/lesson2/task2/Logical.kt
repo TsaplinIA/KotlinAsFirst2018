@@ -35,8 +35,6 @@ fun isNumberHappy(number: Int): Boolean {
 fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean =
         x1 == x2 || y1 == y2 || x1 + y1 == x2 + y2 || y1 - x1 == y2 - x2
 
-
-
 /**
  * Простая
  *
@@ -76,7 +74,7 @@ fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
     var nowI = 0
     var countWin = 0
     for (i in 1..3) {
-        var min: Int = Int.MAX_VALUE
+        var min = Int.MAX_VALUE
         for (j in 1..2) {
             if (brick[i] <= wall[j] && wall[j] < min) {
                 nowI = j
