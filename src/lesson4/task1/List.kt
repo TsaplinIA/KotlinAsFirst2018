@@ -174,8 +174,6 @@ fun polynom(p: List<Double>, x: Double): Double {
 }
 /* = p.fold(0.0) { previousResult, element ->
     previousResult + element * pow(x, p.indexOf(element).toDouble())*/
-
-
 /**
  * Средняя
  *
