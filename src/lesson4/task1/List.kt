@@ -226,6 +226,7 @@ fun factorizeToString(n: Int): String = factorize(n).joinToString(separator = "*
 fun convert(n: Int, base: Int): List<Int> {
     var n2 = n
     var resList = listOf<Int>()
+    if (n2 == 0) return listOf(0)
     while (n2 != 0) {
         resList = listOf(n2 % base) + resList
         n2 /= base
@@ -242,7 +243,7 @@ fun convert(n: Int, base: Int): List<Int> {
  * Например: n = 100, base = 4 -> 1210, n = 250, base = 14 -> 13c
  */
 fun convertToString(n: Int, base: Int): String {
-    val alpha = "abcdefghigklmnopqrstuvwxyz"
+    val alpha = "abcdefghijklmnopqrstuvwxyz"
     return convert(n, base).joinToString(
             separator = "",
             transform = { if (it > 9) alpha[it - 10].toString() else "$it" }
@@ -274,9 +275,11 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * Например: str = "13c", base = 14 -> 250
  */
 fun decimalFromString(str: String, base: Int): Int {
-    val alpha = "abcdefghigklmnopqrstuvwxyz"
+    val alpha = "abcdefghijklmnopqrstuvwxyz"
+
     val beta = str.toList().map { if (it in alpha) alpha.indexOf(it) + 10 else "$it".toInt() }
     return decimal(beta, base)
+
 }
 
 /**
@@ -339,7 +342,7 @@ fun decimalFromString(str: String, base: Int): Int {
 fun roman(n: Int): String {
     val alpha = listOf("I", "V", "X", "L", "C", "D", "M", "", "")
     val k = Array(4) { 0 }
-    var n2 = n
+    var n2 = n % 1000
     var res = ""
     var temp1 = 0
     while (n2 != 0) {
@@ -368,6 +371,8 @@ fun roman(n: Int): String {
         n2 /= 10
         temp1 += 2
     }
+    val n3 = n / 1000
+    repeat(n3) { res= alpha[6] + res }
     return res
 }
 
@@ -407,7 +412,7 @@ fun russian(n: Int): String {
 fun threeDigitInStr(n: Int): String {
     val alpha = listOf("", "десять", "двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят", "семьдесят", "восемдесят",
             "девяносто", "оди", "две", "три", "четыр", "пят", "шест", "сем", "восем", "девят", "надцать")
-    val beta = listOf("сто", "двести", "триста", "четыресто", "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот")
+    val beta = listOf("сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот")
     val phi = listOf("", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
     var res = ""
     val temp1 = n / 100
