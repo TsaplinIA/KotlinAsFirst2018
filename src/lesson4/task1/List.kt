@@ -326,7 +326,7 @@ fun roman(n: Int): String {
         temp1 += 2
     }
     val n3 = n / 1000
-    repeat(n3) { res= alpha[6] + res }
+    repeat(n3) { res = alpha[6] + res }
     return res
 }
 
