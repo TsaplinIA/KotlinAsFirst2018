@@ -420,7 +420,7 @@ fun threeDigitInStr(n: Int): String {
     if (temp1 > 0) res += beta[temp1 - 1] + " "
     res += when (temp2) {
         in 11..19 -> alpha[temp2 % 10 + 9] + alpha[19] + " "
-        in 1..10 -> phi[temp2 % 10] + " "
+        in 1..9 -> phi[temp2 % 10] + " "
         else -> alpha[temp2 / 10] + " " + phi[temp2 % 10] + " "
     }
     return res.trim()
