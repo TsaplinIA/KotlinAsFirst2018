@@ -165,9 +165,16 @@ fun times(a: List<Double>, b: List<Double>): Double {
  * Коэффициенты многочлена заданы списком p: (p0, p1, p2, p3, ..., pN).
  * Значение пустого многочлена равно 0.0 при любом x.
  */
-fun polynom(p: List<Double>, x: Double): Double = p.fold(0.0) { previousResult, element ->
-    previousResult + element * pow(x, p.indexOf(element).toDouble())
+fun polynom(p: List<Double>, x: Double): Double {
+    var res = p[0]
+    for (i in 1 until p.size) {
+        res += p[i] * pow(x, i.toDouble())
+    }
+    return res
 }
+/* = p.fold(0.0) { previousResult, element ->
+    previousResult + element * pow(x, p.indexOf(element).toDouble())*/
+
 
 /**
  * Средняя
@@ -276,10 +283,8 @@ fun decimal(digits: List<Int>, base: Int): Int {
  */
 fun decimalFromString(str: String, base: Int): Int {
     val alpha = "abcdefghijklmnopqrstuvwxyz"
-
     val beta = str.toList().map { if (it in alpha) alpha.indexOf(it) + 10 else "$it".toInt() }
     return decimal(beta, base)
-
 }
 
 /**
@@ -290,55 +295,6 @@ fun decimalFromString(str: String, base: Int): Int {
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-/*fun roman(n: Int): String {
-    val table = Array(4) { Array(3) { "x" } }
-    table[0] = arrayOf("I", "V", "X")
-    table[1] = arrayOf("X", "L", "C")
-    table[2] = arrayOf("C", "D", "M")
-    table[3] = arrayOf("M", "?", "?")
-    var temp = 0
-    var n2 = n
-    var res = ""
-    while (n2 != 0) {
-        val temp2 = n2 % 10
-        val k = Array(4) { 0 }
-        when (temp2) {
-            0 -> k[0] = 0
-            in 1..3 -> k[0] = temp2
-            4 -> {
-                k[0] = 1
-                k[1] = 1
-            }
-            in 5..8 -> {
-                k[1] = 1
-                k[2] = temp2 - 5
-            }
-            else -> {
-                k[2] = 1
-                k[3] = 1
-            }
-        }
-        while (k[3] != 0) {
-            res = table[temp][2] + res
-            k[3]--
-        }
-        while (k[2] != 0) {
-            res = table[temp][0] + res
-            k[2]--
-        }
-        while (k[1] != 0) {
-            res = table[temp][1] + res
-            k[1]--
-        }
-        while (k[0] != 0) {
-            res = table[temp][0] + res
-            k[0]--
-        }
-        n2 /= 10
-        temp++
-    }
-    return res
-}*/
 fun roman(n: Int): String {
     val alpha = listOf("I", "V", "X", "L", "C", "D", "M", "", "")
     val k = Array(4) { 0 }
@@ -410,7 +366,7 @@ fun russian(n: Int): String {
 
 fun threeDigitInStr(n: Int): String {
     val alpha = listOf("", "десять", "двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят",
-            "девяносто", "оди", "две", "три", "четыр", "пят", "шест", "сем", "восем", "девят", "надцать")
+            "девяносто", "один", "две", "три", "четыр", "пят", "шест", "сем", "восем", "девят", "надцать")
     val beta = listOf("сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот")
     val phi = listOf("", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
     var res = ""
