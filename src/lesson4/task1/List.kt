@@ -215,7 +215,6 @@ fun factorize(n: Int): List<Int> {
     }
     return beta.toList()
 }
-
 //fun factorize(n: Int): List<Int> {
 //    var resList = listOf<Int>()
 //    var n2 = n
