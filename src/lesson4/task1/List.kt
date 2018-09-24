@@ -4,8 +4,11 @@ package lesson4.task1
 
 import lesson1.task1.discriminant
 import lesson3.task1.isPrime
-import java.lang.Math.pow
 import kotlin.math.sqrt
+val GLOBAL_ALPHA = listOf("", "десять", "двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят",
+        "девяносто", "один", "две", "три", "четыр", "пят", "шест", "сем", "восем", "девят", "надцать")
+val GLOBAL_BETA = listOf("сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот")
+val GLOBAL_PHI = listOf("", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
 
 /**
  * Пример
@@ -126,7 +129,7 @@ fun abs(v: List<Double>): Double = sqrt(v.map { it * it }.sum())
  *
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
-fun mean(list: List<Double>): Double = if (list.isNotEmpty()) list.sum() / list.size else 0.0
+fun mean(list: List<Double>): Double = if (list.isEmpty()) 0.0 else list.sum() / list.size
 
 /**
  * Средняя
@@ -137,7 +140,8 @@ fun mean(list: List<Double>): Double = if (list.isNotEmpty()) list.sum() / list.
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
-    val meanNow = list.sum() / list.size
+    val meanNow: Double
+    if (list.isEmpty()) return list else meanNow = list.sum() / list.size
     for (i in 0 until list.size) {
         list[i] -= meanNow
     }
@@ -166,10 +170,11 @@ fun times(a: List<Double>, b: List<Double>): Double {
  * Значение пустого многочлена равно 0.0 при любом x.
  */
 fun polynom(p: List<Double>, x: Double): Double {
-    if (p.isEmpty()) return 0.0
-    var res = p[0]
-    for (i in 1 until p.size) {
-        res += p[i] * pow(x, i.toDouble())
+    var res = 0.0
+    var multi = 1.0
+    for (i in 0 until p.size) {
+        res += p[i] * multi
+        multi *= x
     }
     return res
 }
@@ -186,9 +191,8 @@ fun polynom(p: List<Double>, x: Double): Double {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun accumulate(list: MutableList<Double>): MutableList<Double> {
-    if (list.isEmpty()) return list
-    for (i in list.size - 1 downTo 1) {
-        list[i] += list.subList(0, i).sum()
+    for (i in 1 until list.size) {
+        list[i] += list[i - 1]
     }
     return list
 }
@@ -201,17 +205,28 @@ fun accumulate(list: MutableList<Double>): MutableList<Double> {
  * Множители в списке должны располагаться по возрастанию.
  */
 fun factorize(n: Int): List<Int> {
-    var resList = listOf<Int>()
     var n2 = n
-    while (!isPrime(n2)) {
+    val beta = mutableListOf<Int>()
+    while (n2 != 1) {
         var numNow = 2
         while (!(isPrime(numNow) && n2 % numNow == 0)) numNow++
-        resList += listOf(numNow)
+        beta.add(numNow)
         n2 /= numNow
     }
-    resList += listOf(n2)
-    return resList
+    return beta.toList()
 }
+
+//fun factorize(n: Int): List<Int> {
+//    var resList = listOf<Int>()
+//    var n2 = n
+//    while (n2 != 1) {
+//        var numNow = 2
+//        while (!(isPrime(numNow) && n2 % numNow == 0)) numNow++
+//        resList += listOf(numNow)
+//        n2 /= numNow
+//    }
+//    return resList
+//}
 
 /**
  * Сложная
@@ -231,12 +246,11 @@ fun factorizeToString(n: Int): String = factorize(n).joinToString(separator = "*
  */
 fun convert(n: Int, base: Int): List<Int> {
     var n2 = n
-    var resList = listOf<Int>()
-    if (n2 == 0) return listOf(0)
-    while (n2 != 0) {
-        resList = listOf(n2 % base) + resList
+    val resList = mutableListOf<Int>()
+    do {
+        resList.add(0, n2 % base)
         n2 /= base
-    }
+    } while (n2 != 0)
     return resList
 }
 
@@ -249,10 +263,9 @@ fun convert(n: Int, base: Int): List<Int> {
  * Например: n = 100, base = 4 -> 1210, n = 250, base = 14 -> 13c
  */
 fun convertToString(n: Int, base: Int): String {
-    val alpha = "abcdefghijklmnopqrstuvwxyz"
     return convert(n, base).joinToString(
             separator = "",
-            transform = { if (it > 9) alpha[it - 10].toString() else "$it" }
+            transform = { if (it > 9) ('a' + it - 10).toString() else "$it" }
     )
 }
 
@@ -266,9 +279,17 @@ fun convertToString(n: Int, base: Int): String {
 fun decimal(digits: List<Int>, base: Int): Int {
     var sum = 0
     for (i in 0 until digits.size) {
-        sum += digits[i] * pow(base.toDouble(), (digits.size - i - 1).toDouble()).toInt()
+        sum += digits[i] * powIntNaturalBase(base, digits.size - i - 1)
     }
     return sum
+
+}
+
+fun powIntNaturalBase(a: Int, b: Int): Int {
+    if (b < 0) return 0
+    var res = 1
+    repeat(b) { res *= a }
+    return res
 }
 
 /**
@@ -281,10 +302,11 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * Например: str = "13c", base = 14 -> 250
  */
 fun decimalFromString(str: String, base: Int): Int {
-    val alpha = "abcdefghijklmnopqrstuvwxyz"
-    val beta = str.toList().map { if (it in alpha) alpha.indexOf(it) + 10 else "$it".toInt() }
+    val beta = str.toList().map { digitFromLetter(it) }
     return decimal(beta, base)
 }
+
+fun digitFromLetter(letter: Char): Int = if (letter < 'a') letter - '0' else letter - 'a' + 10
 
 /**
  * Сложная
@@ -364,18 +386,14 @@ fun russian(n: Int): String {
 }
 
 fun threeDigitInStr(n: Int): String {
-    val alpha = listOf("", "десять", "двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят",
-            "девяносто", "один", "две", "три", "четыр", "пят", "шест", "сем", "восем", "девят", "надцать")
-    val beta = listOf("сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот")
-    val phi = listOf("", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
     var res = ""
     val temp1 = n / 100
     val temp2 = n % 100
-    if (temp1 > 0) res += beta[temp1 - 1] + " "
+    if (temp1 > 0) res += GLOBAL_BETA[temp1 - 1] + " "
     res += when (temp2) {
-        in 11..19 -> alpha[temp2 % 10 + 9] + alpha[19] + " "
-        in 1..9 -> phi[temp2 % 10] + " "
-        else -> alpha[temp2 / 10] + " " + phi[temp2 % 10] + " "
+        in 11..19 -> GLOBAL_ALPHA[temp2 % 10 + 9] + GLOBAL_ALPHA[19] + " "
+        in 1..9 -> GLOBAL_PHI[temp2 % 10] + " "
+        else -> GLOBAL_ALPHA[temp2 / 10] + " " + GLOBAL_PHI[temp2 % 10] + " "
     }
     return res.trim()
 }
