@@ -140,8 +140,7 @@ fun mean(list: List<Double>): Double = if (list.isEmpty()) 0.0 else list.sum() /
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
-    val meanNow: Double
-    if (list.isEmpty()) return list else meanNow = list.sum() / list.size
+    val meanNow = mean(list)
     for (i in 0 until list.size) {
         list[i] -= meanNow
     }
@@ -209,7 +208,7 @@ fun factorize(n: Int): List<Int> {
     val beta = mutableListOf<Int>()
     while (n2 != 1) {
         var numNow = 2
-        while (!(isPrime(numNow) && n2 % numNow == 0)) numNow++
+        while (n2 % numNow != 0) numNow++
         beta.add(numNow)
         n2 /= numNow
     }
@@ -277,8 +276,10 @@ fun convertToString(n: Int, base: Int): String {
  */
 fun decimal(digits: List<Int>, base: Int): Int {
     var sum = 0
+    var multi = powIntNaturalBase(base, digits.size - 1)
     for (i in 0 until digits.size) {
-        sum += digits[i] * powIntNaturalBase(base, digits.size - i - 1)
+        sum += digits[i] * multi
+        multi /= base
     }
     return sum
 
