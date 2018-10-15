@@ -172,13 +172,11 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *   ) -> "Мария"
  */
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
-    var min: Double = Double.MAX_VALUE
-    var resStr = ""
-    for ((name, typePrice) in stuff) if (typePrice.first == kind && typePrice.second < min) {
-        min = typePrice.second
-        resStr = name
-    }
-    return if (resStr == "") null else resStr
+    val mapNow = mutableListOf<Double>()
+    stuff.map { if (it.value.first == kind) mapNow.add(it.value.second) }
+    val min = mapNow.min()
+    stuff.filter { it.value.first == kind && it.value.second == min }.map { return it.key }
+    return null
 }
 
 /**
@@ -206,22 +204,17 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  *        )
  */
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
-    val mapTemp = mutableMapOf<String, MutableSet<String>>()
-    var mapNow: MutableMap<String, MutableSet<String>>
-    for ((key) in friends) mapTemp[key] = friends[key]!!.toMutableSet()
+    val mapTemp = mutableMapOf<String, MutableSet<String>>() // массив для изменений
+    var mapNow: MutableMap<String, MutableSet<String>> // массив для котролья изменений
+    for ((key) in friends) mapTemp[key] = friends[key]!!.toMutableSet() // переводим вводимый массив в мутабельный
     do {
-        mapNow = mapTemp
-        val mapAdd = mutableMapOf<String, MutableSet<String>>()
-        for ((name, set) in mapNow)
-            for (el in set) if (mapNow.contains(el)) mapAdd[name] = mapNow[el]!! else mapTemp[el] = mutableSetOf()
-        for ((name, set) in mapAdd) mapTemp[name]?.addAll(set)
-    } while (mapTemp != mapNow)
-    val resMap = mutableMapOf<String, Set<String>>()
-    for ((name, set) in mapNow) {
-        if (name in set) set.remove(name)
-        resMap[name] = set.toList().sorted().toSet()
-    }
-    return resMap
+        mapNow = mapTemp.toMutableMap() // записываем mapTemp в mapNow
+        for ((name, set) in mapNow) for (el in set) // для каждого элемента в каждой паре массива mapNow
+            if (mapNow.contains(el)) mapTemp[name] = mapTemp[name]!!.union(mapNow[el]!!).toMutableSet()
+            else mapTemp[el] = mutableSetOf() //записываем знакомство по одному рукопожатию
+    } while (mapTemp != mapNow) // повторяем пока не "стабилизируемся"
+    mapNow.map { if (it.value.contains(it.key)) it.value.remove(it.key) } // удалянм из списка знакомств самих себя
+    return mapNow
 }
 
 /**
@@ -258,11 +251,8 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.toSet().int
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    val setNow = chars.toSet()
-    for (element in word) if (element !in setNow) return false
-    return true
-}
+fun canBuildFrom(chars: List<Char>, word: String): Boolean =
+        word.toLowerCase().toSet().all { it -> it in chars.map { it.toLowerCase() }.toSet() }
 
 /**
  * Средняя
@@ -277,16 +267,17 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean {
  *   extractRepeats(listOf("a", "b", "a")) -> mapOf("a" to 2)
  */
 fun extractRepeats(list: List<String>): Map<String, Int> {
-    val copyList = list.toMutableList()
-    val monoList = list.toSet().toList()
-    val resultMap: MutableMap<String, Int> = mutableMapOf()
-    for (elem in monoList) copyList.remove(elem)
-    for (elem in copyList) {
-        var temp = 0
-        for (element in list) if (elem == element) temp++
-        resultMap += elem to temp
+    val resMap = mutableMapOf<String, Int>()
+    val tempMap = list.toMutableList()
+    list.toSet().toList().forEach {
+        var count = 0
+        while (it in tempMap) {
+            count++
+            tempMap.remove(it)
+        }
+        if (count > 1) resMap[it] = count
     }
-    return resultMap
+    return resMap
 }
 
 /**
@@ -350,95 +341,37 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
-    val copyTrs = treasures.toMutableMap()
-    var resList: List<String> = mutableListOf()
-    do {
-        val removeList = mutableListOf<String>()
-        for ((first, second) in copyTrs) if (second.first > capacity) removeList.add(first)
-        copyTrs -= removeList
-        var capAll = 0
-        for (el in copyTrs) capAll += el.value.first
-        val loseList = mutableListOf<String>()
-        while (capAll > capacity) {
-            var mNow = Int.MAX_VALUE
-            var pNow = Int.MIN_VALUE
-            for ((name, prm) in copyTrs) when {
-                prm.second < pNow -> pNow = prm.second
-                prm.second == pNow && prm.first > mNow -> mNow = prm.first
-                prm.first == mNow && prm.second == pNow -> {
-                    loseList.add(name)
-                    capAll - mNow
-                    mNow = Int.MAX_VALUE
-                    pNow = Int.MIN_VALUE
-                }
-            }
-        }
-        val list2names = mutableListOf<String>()
-        for ((key) in copyTrs) list2names.add(key)
-        resList += list2names - loseList
-        copyTrs -= resList
-    } while (copyTrs.isNotEmpty())
-    return resList.toSet()
-}
-
-//val copyTrs = treasures.toMutableMap()
-//var resList: List<String> = mutableListOf()
-//do {
-//    val removeList = mutableListOf<String>()
-//    for ((first, second) in copyTrs) if (second.first > capacity) removeList.add(first)
-//    copyTrs -= removeList
-//    var capAll = 0
-//    for ((name, param) in copyTrs) capAll += param.first
-//    val loseList = mutableListOf<String>()
-//    while (capAll > capacity) {
-//        var mNow = Int.MAX_VALUE
-//        var pNow = Int.MIN_VALUE
-//        for ((name, prm) in copyTrs) if (prm.second < pNow) pNow = prm.second
-//        for ((name, prm) in copyTrs) if (prm.second == pNow && prm.first > mNow) mNow = prm.first
-//        for ((name, prm) in copyTrs) if (prm.first == mNow && prm.second == pNow) {
-//            loseList.add(name)
-//            capAll - mNow
-//            mNow = Int.MAX_VALUE
-//            pNow = Int.MIN_VALUE
-//        }
-//    }
-//    val list2names = mutableListOf<String>()
-//    for ((key) in copyTrs) list2names.add(key)
-//    resList += list2names - loseList
-//    copyTrs -= resList
-//} while (copyTrs.isNotEmpty())
-//return resList.toSet()
-
-//fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
-//    val list2 = treasures.toMutableMap()
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+//    val copyTrs = treasures.toMutableMap()
 //    var resList: List<String> = mutableListOf()
-//    val capacityNow = capacity
 //    do {
-//        val removeList = mutableListOf<String>()
-//        for ((first, second) in list2) if (second.first > capacity) removeList.add(first)
-//        list2 -= removeList
-//        removeList.clear()
-//        var capAll = 0
-//        for ((name, param) in list2) capAll += param.first
+//        val removeList = mutableListOf<String>()                                            //удаляем всё что точно не подойдёт
+//        for ((first, second) in copyTrs) if (second.first > capacity) removeList.add(first) //
+//        copyTrs -= removeList                                                               //
+//
+//        var capAll = 0                              //определяем вес всех подходящих под максимальный вес
+//        for (el in copyTrs) capAll += el.value.first//
+//
 //        val loseList = mutableListOf<String>()
-//        while (capAll > capacityNow) {
+//        while (capAll > capacity) {
 //            var mNow = Int.MAX_VALUE
 //            var pNow = Int.MIN_VALUE
-//            for ((name, param) in list2) if (param.second < pNow) pNow = param.second
-//            for ((name, param) in list2) if (param.second == pNow && param.first > mNow) mNow = param.first
-//            for ((name, param) in list2) if (param.first == mNow && param.second == pNow) {
-//                loseList.add(name)
-//                capAll - mNow
-//                mNow = Int.MAX_VALUE
-//                pNow = Int.MIN_VALUE
+//            for ((name, prm) in copyTrs) when {
+//                prm.second < pNow -> pNow = prm.second
+//                prm.second == pNow && prm.first > mNow -> mNow = prm.first
+//                prm.first == mNow && prm.second == pNow -> {
+//                    loseList.add(name)
+//                    capAll - mNow
+//                    mNow = Int.MAX_VALUE
+//                    pNow = Int.MIN_VALUE
+//                }
 //            }
 //        }
 //        val list2names = mutableListOf<String>()
-//        for ((key) in list2) list2names.add(key)
+//        for ((key) in copyTrs) list2names.add(key)
 //        resList += list2names - loseList
-//        list2 -= resList
-//    } while (list2.isNotEmpty())
+//        copyTrs -= resList
+//    } while (copyTrs.isNotEmpty())
 //    return resList.toSet()
-//
 //}
+
