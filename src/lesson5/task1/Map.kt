@@ -2,6 +2,8 @@
 
 package lesson5.task1
 
+import lesson4.task1.meanMute
+
 /**
  * Пример
  *
@@ -96,8 +98,8 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  */
 fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> {
     val resMap = mapB + mapA
-    val alphaMap: MutableMap<String, String> = mutableMapOf()
-    for ((key, value) in mapB) if (value != resMap[key]) alphaMap[key] = "${resMap[key]}, $value"
+    val alphaMap = mutableMapOf<String, String>()
+    mapB.forEach { if (it.value != resMap[it.key]) alphaMap[it.key] = "${resMap[it.key]}, ${it.value}" }
     return resMap + alphaMap
 }
 
@@ -112,11 +114,9 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
  *     -> mapOf(5 to listOf("Семён", "Михаил"), 3 to listOf("Марат"))
  */
 fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
-    val resMutMap: MutableMap<Int, MutableList<String>> = mutableMapOf()
-    val resMap: MutableMap<Int, List<String>> = mutableMapOf()
-    for ((name, grade) in grades)
-        if (grade in resMutMap) resMutMap[grade]!!.add(name)
-        else resMutMap[grade] = mutableListOf(name)
+    val resMutMap = mutableMapOf<Int, MutableList<String>>()
+    val resMap = mutableMapOf<Int, List<String>>()
+    grades.forEach { resMutMap.getOrPut(it.value) { mutableListOf() }.add(it.key) }
     for ((key, value) in resMutMap) resMap[key] = value.toList().sortedDescending()
     return resMap
 }
@@ -131,10 +131,7 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "z", "b" to "sweet")) -> true
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "zee", "b" to "sweet")) -> false
  */
-fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
-    for ((key, value) in a) if (value != b[key]) return false
-    return true
-}
+fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean = a.all { it.value == b[it.key] }
 
 /**
  * Средняя
@@ -148,11 +145,9 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
  */
 fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
     val tempMap: MutableMap<String, MutableList<Double>> = mutableMapOf()
-    for ((first, second) in stockPrices)
-        if (first in tempMap) tempMap[first]?.add(second)
-        else tempMap[first] = mutableListOf(second)
+    stockPrices.forEach { tempMap.getOrPut(it.first) { mutableListOf() }.add(it.second) }
     val resMap: MutableMap<String, Double> = mutableMapOf()
-    for ((first, second) in tempMap) resMap[first] = second.sum() / second.size
+    for ((first, second) in tempMap) resMap[first] = meanMute(second)
     return resMap
 }
 
@@ -209,9 +204,10 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
     for ((key) in friends) mapTemp[key] = friends[key]!!.toMutableSet() // переводим вводимый массив в мутабельный
     do {
         mapNow = mapTemp.toMutableMap() // записываем mapTemp в mapNow
-        for ((name, set) in mapNow) for (el in set) // для каждого элемента в каждой паре массива mapNow
-            if (mapNow.contains(el)) mapTemp[name] = mapTemp[name]!!.union(mapNow[el]!!).toMutableSet()
-            else mapTemp[el] = mutableSetOf() //записываем знакомство по одному рукопожатию
+        for ((name, set) in mapNow)
+            for (el in set) // для каждого элемента в каждой паре массива mapNow
+                if (mapNow.contains(el)) mapTemp[name] = mapTemp[name]!!.union(mapNow[el]!!).toMutableSet()
+                else mapTemp[el] = mutableSetOf() //записываем знакомство по одному рукопожатию
     } while (mapTemp != mapNow) // повторяем пока не "стабилизируемся"
     mapNow.map { if (it.value.contains(it.key)) it.value.remove(it.key) } // удалянм из списка знакомств самих себя
     return mapNow
