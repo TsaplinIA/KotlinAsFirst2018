@@ -130,6 +130,7 @@ fun abs(v: List<Double>): Double = sqrt(v.map { it * it }.sum())
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
 fun mean(list: List<Double>): Double = if (list.isEmpty()) 0.0 else list.sum() / list.size
+fun meanMute(list: MutableList<Double>): Double = if (list.isEmpty()) 0.0 else list.sum() / list.size
 
 /**
  * Средняя
@@ -260,12 +261,10 @@ fun convert(n: Int, base: Int): List<Int> {
  * строчными буквами: 10 -> a, 11 -> b, 12 -> c и так далее.
  * Например: n = 100, base = 4 -> 1210, n = 250, base = 14 -> 13c
  */
-fun convertToString(n: Int, base: Int): String {
-    return convert(n, base).joinToString(
-            separator = "",
-            transform = { if (it > 9) ('a' + it - 10).toString() else "$it" }
-    )
-}
+fun convertToString(n: Int, base: Int): String = convert(n, base).joinToString(
+        separator = "",
+        transform = { if (it > 9) ('a' + it - 10).toString() else "$it" }
+)
 
 /**
  * Средняя
