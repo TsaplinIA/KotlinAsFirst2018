@@ -346,6 +346,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
         i < specs[0].first -> 0 to mutableSetOf()
         else -> specs[0].second to mutableSetOf(titles[0])
     }
+    if (treasures.size == 1) return maxPrices[0 to capacity]!!.second
     fun choice(count: Int, w: Int): Pair<Int, MutableSet<String>> {
         val tempDown = maxPrices.getOrPut(count - 1 to w) { choice(count - 1, w) }
         if (w < specs[count].first) return tempDown
