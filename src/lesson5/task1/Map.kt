@@ -116,7 +116,7 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
 fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
     val resMutMap = mutableMapOf<Int, MutableList<String>>()
     val resMap = mutableMapOf<Int, List<String>>()
-    grades.forEach { resMutMap.getOrPut(it.value) { mutableListOf() }.add(it.key) }
+    grades.forEach { resMutMap.getOrPut(it.value, ::mutableListOf).add(it.key) }
     for ((key, value) in resMutMap) resMap[key] = value.toList().sortedDescending()
     return resMap
 }
@@ -337,36 +337,24 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
-//    val copyTrs = treasures.toMutableMap()
-//    var resList: List<String> = mutableListOf()
-//    do {
-//        val removeList = mutableListOf<String>()                                            //удаляем всё что точно не подойдёт
-//        for ((first, second) in copyTrs) if (second.first > capacity) removeList.add(first) //
-//        copyTrs -= removeList                                                               //
-//
-//        var capAll = 0                              //определяем вес всех подходящих под максимальный вес
-//        for (el in copyTrs) capAll += el.value.first//
-//
-//        val loseList = mutableListOf<String>()
-//        while (capAll > capacity) {
-//            var mNow = Int.MAX_VALUE
-//            var pNow = Int.MIN_VALUE
-//            for ((name, prm) in copyTrs) when {
-//                prm.second < pNow -> pNow = prm.second
-//                prm.second == pNow && prm.first > mNow -> mNow = prm.first
-//                prm.first == mNow && prm.second == pNow -> {
-//                    loseList.add(name)
-//                    capAll - mNow
-//                    mNow = Int.MAX_VALUE
-//                    pNow = Int.MIN_VALUE
-//                }
-//            }
-//        }
-//        val list2names = mutableListOf<String>()
-//        for ((key) in copyTrs) list2names.add(key)
-//        resList += list2names - loseList
-//        copyTrs -= resList
-//    } while (copyTrs.isNotEmpty())
-//    return resList.toSet()
-//}
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    val titles = treasures.keys.toList()
+    val specs = treasures.values.toList()
+    val maxPrices = mutableMapOf<Pair<Int, Int>, Pair<Int, MutableSet<String>>>()
+    for (i in 0..capacity) maxPrices[0 to i] = when {
+        i < specs[0].first -> 0 to mutableSetOf()
+        else -> specs[0].second to mutableSetOf(titles[0])
+    }
+    fun choice(count: Int, w: Int): Pair<Int, MutableSet<String>> {
+        val tempDown = maxPrices.getOrPut(count - 1 to w) { choice(count - 1, w) }
+        if (w < specs[count].first) return tempDown
+        val tempUp = maxPrices.getOrPut(count - 1 to w - specs[count].first) {
+            choice(count - 1, w - specs[count].first)
+        }
+        if (tempUp.first + specs[count].second > tempDown.first)
+            return tempUp.first + specs[count].second to
+                    tempUp.second.union(mutableSetOf(titles[count])).toMutableSet()
+        return tempDown
+    }
+    return choice(treasures.size - 1, capacity).second
+}
