@@ -340,7 +340,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     val titles = treasures.keys.toList()
     val specs = treasures.values.toList()
     val maxPrices = mutableMapOf<Pair<Int, Int>, Pair<Int, MutableSet<String>>>()
-    if (treasures == mapOf<String, Pair<Int, Int>>()) return setOf()
+    if (treasures.isEmpty()) return setOf()
     for (i in 0..capacity) maxPrices[0 to i] = when {
         i < specs[0].first -> 0 to mutableSetOf()
         else -> specs[0].second to mutableSetOf(titles[0])
