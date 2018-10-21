@@ -169,7 +169,7 @@ fun bestLongJump(jumps: String): Int {
  */
 fun bestHighJump(jumps: String): Int {
     val shortJumps = jumps
-            .replace(Regex("""\d+\s[%-]+\s"""), "")
+            .replace(Regex("""\d+\s[%-]+\s?"""), "")
             .replace(Regex("""[+%-]+"""), "")
             .replace(Regex("""\s+"""), " ")
     return allJumps(shortJumps)
@@ -390,6 +390,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
             }
         }
     }
+    if (hand !in 0 until cells) throw IllegalStateException()
     return conveyer
 }
 
