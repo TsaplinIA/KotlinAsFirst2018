@@ -169,7 +169,7 @@ fun bestLongJump(jumps: String): Int {
  */
 fun bestHighJump(jumps: String): Int {
     val shortJumps = jumps
-            .replace(Regex("""\d+\s[%-]+\s?"""), "")
+            .replace(Regex("""\d+\s[%-]+(\s|$)"""), "")
             .replace(Regex("""[+%-]+"""), "")
             .replace(Regex("""\s+"""), " ")
     return allJumps(shortJumps)
@@ -242,10 +242,11 @@ fun mostExpensive(description: String): String {
     if (Regex("""([^\s]+\s(\d+\.\d+|\d+);\s)*[^\s]+\s(\d+\.\d+|\d+)""").matches(description)) {
         val strList = description.split("; ").map { "$it.0" }
         val pairList = strList.map {
-            val tally1 = Regex("""\d+\.""").find(it)!!.value
+            val tally1 = Regex("""\s\d+\.""").find(it)!!.value
             val tally2 = Regex("""\.\d+""").find(it)!!.value
-            val temp1 = tally1.substring(0, tally1.length - 1).toInt()
-            val temp2 = tally2.substring(1, tally2.length).toInt()
+            val temp1 = tally1.substring(1, tally1.length - 1).toInt()
+            val temp2 = if (tally2.replace(Regex("""\.0*"""), "") == "") 0
+            else tally2.replace(Regex("""\.0*"""), "").toInt()
             Regex("""[^\s]+""").find(it)!!.value to (temp1 to temp2)
         }
         for ((name, pr) in pairList)
