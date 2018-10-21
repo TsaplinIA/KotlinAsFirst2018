@@ -60,7 +60,7 @@ fun main(args: Array<String>) {
 }
 
 
-val MONTHS_NAME = listOf("января", "февраля", "марта", "апреля", "майя", "июня", "июля", "августа", "сентября",
+val MONTHS_NAME = listOf("января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября",
         "октября", "ноября", "декабря")
 
 /**
@@ -155,7 +155,7 @@ fun flattenPhoneNumber(phone: String): String = if (
 fun bestLongJump(jumps: String): Int {
     var res = -1
     if (Regex("""((\d+|%|-)(\s)+)+(\d+|%|-)|(\d+|%|-)""").matches(jumps))
-        jumps.split(" ").filter { Regex("""\d+""").matches(it) }.forEach { res = maxOf(it.toInt(), res) }
+        Regex("""\s+""").split(jumps).filter { Regex("""\d+""").matches(it) }.forEach { res = maxOf(it.toInt(), res) }
     return res
 }
 
@@ -211,7 +211,7 @@ fun firstDuplicateIndex(str: String): Int {
     val words = str.split(" ")
     var wNum = -1
     if (words.size < 2) return -1
-    for (number in 0 until words.size - 2)
+    for (number in 0..words.size - 2)
         if (words[number].toLowerCase() == words[number + 1].toLowerCase()) {
             wNum = number
             break
@@ -232,7 +232,7 @@ fun firstDuplicateIndex(str: String): Int {
  */
 fun mostExpensive(description: String): String {
     var str = "" to (-1 to -1)
-    if (Regex("""([А-Яа-яёЁ]+\s(\d+\.\d+|\d+);\s)*[А-Яа-яёЁ]+\s(\d+\.\d+|\d+)""").matches(description)) {
+    if (Regex("""(.+\s(\d+\.\d+|\d+);\s)*.+\s(\d+\.\d+|\d+)""").matches(description)) {
         val strList = description.split("; ").map { "$it.0" }
         val pairList = strList.map {
             val tally1 = Regex("""\d+\.""").find(it)!!.value
