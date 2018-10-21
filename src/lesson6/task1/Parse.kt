@@ -79,17 +79,17 @@ fun dateStrToDigit(str: String): String {
     val temp = str.split(" ")
     val month: Int
     try {
-        if (temp.size != 3) Exception()
+        if (temp.size != 3) throw Exception()
         month = MONTHS_NAME.indexOf(temp[1]) + 1
-        if (month !in 1..12) Exception()
+        if (month !in 1..12) throw Exception()
     } catch (e: Exception) {
         return ""
     }
-    var day: Int = 40
-    val year: Int
+    var day = 40
+    var year: Int = -2
     try {
         if (Regex("""[0-3]?\d""").matches(temp[0])) day = Regex("""[1-9]\d*""").find(temp[0])!!.value.toInt()
-        year = temp[2].toInt()
+        if (temp.size >= 3) year = temp[2].toInt()
     } catch (e: NumberFormatException) {
         return ""
     }
@@ -153,10 +153,8 @@ fun flattenPhoneNumber(phone: String): String = if (
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
 fun bestLongJump(jumps: String): Int {
-    var res = -1
-    if (Regex("""((\d+|%|-)(\s)+)+(\d+|%|-)|(\d+|%|-)""").matches(jumps))
-        Regex("""\s+""").split(jumps).filter { Regex("""\d+""").matches(it) }.forEach { res = maxOf(it.toInt(), res) }
-    return res
+    val shortJumps = jumps.replace(Regex("""%|-"""), "").replace(Regex("""\s+"""), " ")
+    return allJumps(shortJumps)
 }
 
 /**
@@ -170,15 +168,20 @@ fun bestLongJump(jumps: String): Int {
  * При нарушении формата входной строки вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
-    var res = -1
-    if (Regex("""(\d+\s[%\-+]+\s)*\d+\s[%\-+]+""").matches(jumps))
-        Regex("""\d+\s[%\-]*\++[%\-]*""").findAll(jumps).forEach {
-            val temp = Regex("""\d+""").find(it.value)
-            res = maxOf(temp!!.value.toInt(), res)
-        }
-    return res
+    val shortJumps = jumps
+            .replace(Regex("""\d+\s[%-]+\s"""), "")
+            .replace(Regex("""[+%-]+"""), "")
+            .replace(Regex("""\s+"""), " ")
+    return allJumps(shortJumps)
 }
 
+
+fun allJumps(jumps: String): Int {
+    var res = -1
+    if (Regex("""[^\d\s]""").containsMatchIn(jumps)) return res
+    Regex("""\s+""").split(jumps).filter { Regex("""\d+""").matches(it) }.forEach { res = maxOf(it.toInt(), res) }
+    return res
+}
 /**
  * Сложная
  *
@@ -208,15 +211,19 @@ fun plusMinus(expression: String): Int {
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
 fun firstDuplicateIndex(str: String): Int {
-    val words = str.split(" ")
-    var wNum = -1
-    if (words.size < 2) return -1
-    for (number in 0..words.size - 2)
-        if (words[number].toLowerCase() == words[number + 1].toLowerCase()) {
-            wNum = number
-            break
+    var strNow = str
+    var charCount = 0
+    while (strNow.contains(Regex("""[^\s]+\s[^\s]+\s?"""))) {
+        val pairWords = Regex("""[^\s]+\s[^\s]+\s?""").find(strNow)!!.value
+        val listWords = pairWords.split(" ")
+        if (listWords[0].toLowerCase() == listWords[1].toLowerCase()) return charCount
+        else {
+            val charCountInWord = Regex("""[^\s]+\s""").find(pairWords)!!.value.length
+            charCount += charCountInWord
+            strNow = strNow.substring(charCountInWord)
         }
-    return if (wNum != -1) Regex("""${words[wNum]} ${words[wNum + 1]}""").find(str)!!.range.first else -1
+    }
+    return -1
 }
 
 /**
@@ -232,14 +239,14 @@ fun firstDuplicateIndex(str: String): Int {
  */
 fun mostExpensive(description: String): String {
     var str = "" to (-1 to -1)
-    if (Regex("""(.+\s(\d+\.\d+|\d+);\s)*.+\s(\d+\.\d+|\d+)""").matches(description)) {
+    if (Regex("""([^\s]+\s(\d+\.\d+|\d+);\s)*[^\s]+\s(\d+\.\d+|\d+)""").matches(description)) {
         val strList = description.split("; ").map { "$it.0" }
         val pairList = strList.map {
             val tally1 = Regex("""\d+\.""").find(it)!!.value
             val tally2 = Regex("""\.\d+""").find(it)!!.value
             val temp1 = tally1.substring(0, tally1.length - 1).toInt()
             val temp2 = tally2.substring(1, tally2.length).toInt()
-            Regex("""[А-Яа-яёЁ]+""").find(it)!!.value to (temp1 to temp2)
+            Regex("""[^\s]+""").find(it)!!.value to (temp1 to temp2)
         }
         for ((name, pr) in pairList)
             if (pr.first > str.second.first || (pr.first == str.second.first && pr.second > str.second.second))
