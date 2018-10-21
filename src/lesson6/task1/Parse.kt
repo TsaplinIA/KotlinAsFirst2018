@@ -60,7 +60,7 @@ fun main(args: Array<String>) {
 }
 
 
-val MONTHS_NAME = listOf("января", "февраля", "марта", "апреля", "майя", "июня", "июля", "августа", "сеньтября",
+val MONTHS_NAME = listOf("января", "февраля", "марта", "апреля", "майя", "июня", "июля", "августа", "сентября",
         "октября", "ноября", "декабря")
 
 /**
@@ -85,10 +85,10 @@ fun dateStrToDigit(str: String): String {
     } catch (e: Exception) {
         return ""
     }
-    val day: Int
+    var day: Int = 40
     val year: Int
     try {
-        day = temp[0].toInt()
+        if (Regex("""[0-3]?\d""").matches(temp[0])) day = Regex("""[1-9]\d*""").find(temp[0])!!.value.toInt()
         year = temp[2].toInt()
     } catch (e: NumberFormatException) {
         return ""
@@ -154,7 +154,7 @@ fun flattenPhoneNumber(phone: String): String = if (
  */
 fun bestLongJump(jumps: String): Int {
     var res = -1
-    if (Regex("""((\d+|%|-)(\s))+(\d+|%|-)|(\d+|%|-)""").matches(jumps))
+    if (Regex("""((\d+|%|-)(\s)+)+(\d+|%|-)|(\d+|%|-)""").matches(jumps))
         jumps.split(" ").filter { Regex("""\d+""").matches(it) }.forEach { res = maxOf(it.toInt(), res) }
     return res
 }
@@ -264,6 +264,7 @@ val ROMAN_VALUE = mapOf('M' to 1000, 'D' to 500, 'C' to 100, 'L' to 50, 'X' to 1
 fun fromRoman(roman: String): Int {
     var res = 0
     val str = roman + 'S'
+    if (roman.isEmpty()) return -1
     if (Regex("""M*(CM)?(D|CD)?C{0,3}(XC)?(L|XL)?X{0,3}(IX)?(V|(IV))?I{0,3}""").matches(roman)) {
         for (i in str.length - 2 downTo 0) {
             var k = i + 1
@@ -312,7 +313,6 @@ fun fromRoman(roman: String): Int {
  *
  */
 fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
-
     var hand = cells / 2
     var power = limit
     var order = 0
@@ -324,16 +324,13 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
         power--
     }
 
-
-
-    if (!Regex("""[+<>\[\]\s-]+""").matches(commands)) throw IllegalArgumentException()
+    if (!Regex("""[+<>\[\]\s-]*""").matches(commands)) throw IllegalArgumentException()
     var controler = 0
     Regex("""[\[\]]""").findAll(commands).forEach {
         if (it.value == "[") controler++ else controler--
         if (controler < 0) throw IllegalArgumentException()
     }
     if (controler != 0) throw IllegalArgumentException()
-
     while (order in 0 until commands.length && power > 0) {
         if (hand !in 0 until cells) throw IllegalStateException()
         val comLit = commands[order]
