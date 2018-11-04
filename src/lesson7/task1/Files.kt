@@ -379,9 +379,12 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         var bopen = false
         var iopen = false
         var sopen = false
+        var nopen = false
         for (line in lines) {
             var resLine = line.replace(Regex("""\s+"""), "")
             val lineP = Regex("""\s*""").matches(resLine)
+            if (nopen && !lineP) extraLine.add("\n")
+            if (!lineP) nopen = true
             if (popen == lineP) {
                 extraLine.add(if (popen) "</p>" else "<p>")
                 popen = !popen
