@@ -120,13 +120,15 @@ fun sibilants(inputName: String, outputName: String) {
  */
 fun centerFile(inputName: String, outputName: String) {
     val lines = File(inputName).readLines().map { it.trim() }
-    val maxL = lines.maxBy { it.length }!!.length
-    val linesCount = lines.size
     val writer = File(outputName).bufferedWriter()
-    lines.forEach {
-        writer.write(Array((maxL - it.trim().length) / 2) { " " }.toList().joinToString(""))
-        writer.write(it.trim())
-        if (lines.indexOf(it) < linesCount) writer.newLine()
+    if (lines.isEmpty()) {
+        val maxL = lines.maxBy { it.length }!!.length
+        val linesCount = lines.size
+        lines.forEach {
+            writer.write(Array((maxL - it.trim().length) / 2) { " " }.toList().joinToString(""))
+            writer.write(it.trim())
+            if (lines.indexOf(it) < linesCount) writer.newLine()
+        }
     }
     writer.close()
 }
