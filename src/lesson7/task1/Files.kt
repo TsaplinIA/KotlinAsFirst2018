@@ -421,6 +421,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         }
 
     }
+    writer.write(extraLine.joinToString(""))
     writer.write("</body></html>")
     writer.close()
 }
