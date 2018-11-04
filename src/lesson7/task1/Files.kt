@@ -54,21 +54,20 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
  *
  */
-fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> = mapOf("0" to 0)
-//{
-//    val resMap = mutableMapOf<String, Int>()
-//    for (str in substrings) {
-//        var res = 0
-//        File(inputName).readLines().forEach {
-//            res += Regex(str.toLowerCase())
-//                    .findAll(it.toLowerCase())
-//                    .toList()
-//                    .size
-//        }
-//        resMap[str] = res
-//    }
-//    return resMap
-//}
+fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
+    val resMap = mutableMapOf<String, Int>()
+    for (str in substrings) {
+        var res = 0
+        File(inputName).readLines().forEach {
+            res += Regex(str.toLowerCase())
+                    .findAll(it.toLowerCase())
+                    .toList()
+                    .size
+        }
+        resMap[str] = res
+    }
+    return resMap
+}
 
 
 /**
@@ -269,7 +268,9 @@ fun top20Words(inputName: String): Map<String, Int> {
 fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
     val newDictionary = dictionary
             .map { it.key.toLowerCase() to it.value.toLowerCase() }
-            .flatMap { listOf(it, it.first.toUpperCase() to it.second.capitalize()) }
+            .toMap() + dictionary
+            .map { it.key.toUpperCase() to it.value.toLowerCase().capitalize() }
+            .filter { it.first != it.first.toLowerCase() }
             .toMap()
     val reader = File(inputName).reader()
     val writer = File(outputName).writer()
