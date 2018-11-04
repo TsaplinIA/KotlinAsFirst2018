@@ -380,17 +380,13 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         var iopen = false
         var sopen = false
         for (line in lines) {
-            when {
-                line.isEmpty() && popen -> {
-                    extraLine.add("</p>")
-                    popen = !popen
-                }
-                line.isNotEmpty() && !popen -> {
-                    extraLine.add("<p>")
-                }
-            }
-            if (line.isEmpty()) continue
             var resLine = line.replace(Regex("""\s+"""), "")
+            val lineP = Regex("""\s*""").matches(resLine)
+            if (popen == lineP) {
+                extraLine.add(if (popen) "</p>" else "<p>")
+                popen = !popen
+            }
+            if (lineP) continue
             fun correct(op: Boolean, reg: Regex, rep: String, func: (Boolean) -> (Unit)) {
                 var x = op
                 while (reg.containsMatchIn(resLine)) {
@@ -424,7 +420,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
             correct(sopen, Regex("""~~"""), "<s>") { sopen = it }
             extraLine.add(resLine)
         }
-
+        if (popen) extraLine.add("</p>")
     }
     writer.write(extraLine.joinToString(""))
     writer.write("</body></html>")
