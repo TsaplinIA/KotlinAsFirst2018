@@ -160,36 +160,38 @@ fun centerFile(inputName: String, outputName: String) {
  */
 fun alignFileByWidth(inputName: String, outputName: String) {
     val lines = File(inputName).readLines()
-    val maxL = lines
-            .maxBy { it.trim().length }!!
-            .trim()
-            .split(Regex("""\s+"""))
-            .fold(0) { total, next -> total + next.length + 1 } - 1 // max кол-во символов в строке
     val writer = File(outputName).bufferedWriter()
-    var strCount = 0
-    for (parStr in lines) {
-        val words = parStr.trim().split(Regex("""\s+"""))
-        if (parStr.replace(Regex("""\s+"""), "") == "" || words.size == 1)
-            writer.write(parStr.replace(Regex("""\s+"""), ""))
-        else {
-            val strList = mutableListOf<String>()
-            var needS = maxL - words.fold(0) { total, next -> total + next.length }
-            val countS = needS / (words.size - 1)
-            needS -= countS * (words.size - 1)
-            for (word in words) {
-                strList.add(word)
-                var plus = 0
-                if (needS > 0) {
-                    plus++
-                    needS--
+    if (lines.isNotEmpty()) {
+        val maxL = lines
+                .maxBy { it.trim().length }!!
+                .trim()
+                .split(Regex("""\s+"""))
+                .fold(0) { total, next -> total + next.length + 1 } - 1 // max кол-во символов в строке
+        var strCount = 0
+        for (parStr in lines) {
+            val words = parStr.trim().split(Regex("""\s+"""))
+            if (parStr.replace(Regex("""\s+"""), "") == "" || words.size == 1)
+                writer.write(parStr.replace(Regex("""\s+"""), ""))
+            else {
+                val strList = mutableListOf<String>()
+                var needS = maxL - words.fold(0) { total, next -> total + next.length }
+                val countS = needS / (words.size - 1)
+                needS -= countS * (words.size - 1)
+                for (word in words) {
+                    strList.add(word)
+                    var plus = 0
+                    if (needS > 0) {
+                        plus++
+                        needS--
+                    }
+                    if (strList.size < words.size * 2 - 1)
+                        strList.add(Array(countS + plus) { " " }.toList().joinToString(""))
                 }
-                if (strList.size < words.size * 2 - 1)
-                    strList.add(Array(countS + plus) { " " }.toList().joinToString(""))
+                writer.write(strList.joinToString(""))
             }
-            writer.write(strList.joinToString(""))
+            strCount++
+            if (strCount < lines.size) writer.newLine()
         }
-        strCount++
-        if (strCount < lines.size) writer.newLine()
     }
     writer.close()
 }
@@ -307,16 +309,16 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun chooseLongestChaoticWord(inputName: String, outputName: String) {
-    val words = File(inputName).readLines()
     val writer = File(outputName).bufferedWriter()
+    val words = File(inputName)
+            .readLines()
+            .filter {
+                val check = it.toLowerCase().toCharArray()
+                check.size == check.toSet().size
+            }
     if (words.isNotEmpty()) {
         val maxLenght = words.maxBy { it.length }!!.length
-        val outWords = words.filter {
-            val check = it
-                    .toLowerCase()
-                    .toCharArray()
-            it.length == maxLenght && check.size == check.toSet().size
-        }
+        val outWords = words.filter { it.length == maxLenght }
         writer.write(outWords.joinToString())
     }
     writer.close()
