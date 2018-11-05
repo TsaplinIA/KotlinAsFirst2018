@@ -377,7 +377,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     var b = lines
             .joinToString("\n") { if (Regex("""\s+""").matches(it)) it.trim().replace(" ", "") else it }
-            .trim('\n')
+            .trimEnd('\n')
     while (Regex("""\*\*(.|\n)*\*\*""").containsMatchIn(b)) {
         var nextTag = "<b>"
         repeat(2) {
