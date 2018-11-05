@@ -56,13 +56,16 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  */
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
     val resMap = mutableMapOf<String, Int>()
+    val lines = File(inputName).readLines().map { it.toLowerCase() }
     for (str in substrings) {
+        val lowStr = str.toLowerCase()
         var res = 0
-        File(inputName).readLines().forEach {
-            res += Regex(str.toLowerCase())
-                    .findAll(it.toLowerCase())
-                    .toList()
-                    .size
+        for (line in lines) {
+            var lineN = line
+            while (Regex(lowStr).containsMatchIn(lineN)) {
+                lineN = lineN.removeRange(0..Regex(lowStr).find(lineN)!!.range.first)
+                res++
+            }
         }
         resMap[str] = res
     }
@@ -373,7 +376,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val lines = File(inputName).readLines()
     val writer = File(outputName).bufferedWriter()
     var b = lines
-            .joinToString("\n") { it.trim().replace(" ", "") }
+            .joinToString("\n") { if (Regex("""\s+""").matches(it)) it.trim().replace(" ", "") else it }
             .trim('\n')
     while (Regex("""\*\*(.|\n)*\*\*""").containsMatchIn(b)) {
         var nextTag = "<b>"
