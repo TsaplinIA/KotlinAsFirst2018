@@ -376,7 +376,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val lines = File(inputName).readLines()
     val writer = File(outputName).bufferedWriter()
     var b = lines
-            .joinToString("\n") { if (Regex("""\s+""").matches(it)) it.trim().replace(" ", "") else it }
+            .joinToString("\n")
     while (Regex("""\*\*(.|\n)*\*\*""").containsMatchIn(b)) {
         var nextTag = "<b>"
         repeat(2) {
@@ -401,7 +401,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
             nextTag = nextTag.replace("<", "</")
         }
     }
-    b = b.replace(Regex("""\n{2,}"""), "</p><p>")
+    b = b.replace(Regex("""\n{2}"""), "</p><p>")
     val extraLine = mutableListOf("<html><body>")
     if (b.isNotEmpty()) {
         extraLine.addAll(listOf("<p>", b, "</p>", "</body></html>"))
