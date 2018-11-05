@@ -372,61 +372,94 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val lines = File(inputName).readLines()
     val writer = File(outputName).bufferedWriter()
-    writer.write("<html><body>")
-    var extraLine = mutableListOf<String>()
-    if (lines.isNotEmpty()) {
-        var popen = false
-        var bopen = false
-        var iopen = false
-        var sopen = false
-        var nopen = false
-        for (line in lines) {
-            var resLine = line.replace(Regex("""\s+"""), "")
-            val lineP = Regex("""\s*""").matches(resLine)
-            if (nopen && !lineP) extraLine.add("\n")
-            if (!lineP) nopen = true
-            if (popen == lineP) {
-                extraLine.add(if (popen) "</p>" else "<p>")
-                popen = !popen
-            }
-            if (lineP) continue
-            fun correct(op: Boolean, reg: Regex, rep: String, func: (Boolean) -> (Unit)) {
-                var x = op
-                while (reg.containsMatchIn(resLine)) {
-                    val tempRange = reg.find(resLine)!!.range
-                    val nextTag = if (x) rep.replace("<", "</") else rep
-                    resLine = resLine.replaceRange(tempRange, nextTag)
-                    x = !x
-                }
-                func(x)
-            }
-//            while (Regex("""\*\*""").containsMatchIn(resLine)) {
-//                val tempRange = Regex("""\*\*""").find(resLine)!!.range
-//                val nextTag = if (bopen) "</b>" else "<b>"
-//                resLine = resLine.replaceRange(tempRange, nextTag)
-//                bopen = !bopen
-//            }
-//            while (Regex("""\*""").containsMatchIn(resLine)) {
-//                val tempRange = Regex("""\*""").find(resLine)!!.range
-//                val nextTag = if (iopen) "</i>" else "<i>"
-//                resLine = resLine.replaceRange(tempRange, nextTag)
-//                iopen = !iopen
-//            }
-//            while (Regex("""~~""").containsMatchIn(resLine)) {
-//                val tempRange = Regex("""~~""").find(resLine)!!.range
-//                val nextTag = if (sopen) "</s>" else "<s>"
-//                resLine = resLine.replaceRange(tempRange, nextTag)
-//                sopen = !sopen
-//            }
-            correct(bopen, Regex("""\*\*"""), "<b>") { bopen = it }
-            correct(iopen, Regex("""\*"""), "<i>") { iopen = it }
-            correct(sopen, Regex("""~~"""), "<s>") { sopen = it }
-            extraLine.add(resLine)
+    var b = lines
+            .joinToString("\n") { it.trim().replace(" ", "") }
+            .trim('\n')
+    while (Regex("""\*\*(.|\n)*\*\*""").containsMatchIn(b)) {
+        var nextTag = "<b>"
+        repeat(2) {
+            val tempRange = Regex("""\*\*""").findAll(b).first().range
+            b = b.replaceRange(tempRange, nextTag)
+            nextTag = nextTag.replace("<", "</")
         }
-        if (popen) extraLine.add("</p>")
     }
+    while (Regex("""\*(.|\n)*\*""").containsMatchIn(b)) {
+        var nextTag = "<i>"
+        repeat(2) {
+            val tempRange = Regex("""\*""").findAll(b).first().range
+            b = b.replaceRange(tempRange, nextTag)
+            nextTag = nextTag.replace("<", "</")
+        }
+    }
+    while (Regex("""~~(.|\n)*~~""").containsMatchIn(b)) {
+        var nextTag = "<s>"
+        repeat(2) {
+            val tempRange = Regex("""~~""").findAll(b).first().range
+            b = b.replaceRange(tempRange, nextTag)
+            nextTag = nextTag.replace("<", "</")
+        }
+    }
+    b = b.replace(Regex("""\n{2,}"""), "</p><p>")
+    val extraLine = mutableListOf("<html><body>")
+    if (b.isNotEmpty()) {
+        extraLine.addAll(listOf("<p>", b, "</p>", "</body></html>"))
+    } else extraLine.add("</body></html>")
     writer.write(extraLine.joinToString(""))
-    writer.write("</body></html>")
+//    writer.write("<html><body>")
+//    var extraLine = mutableListOf<String>()
+//    if (lines.isNotEmpty()) {
+//        var popen = false
+//        var bopen = false
+//        var iopen = false
+//        var sopen = false
+//        var nopen = false
+//        for (line in lines) {
+//            var resLine = line.replace(Regex("""\s+"""), "")
+//            val lineP = Regex("""\s*""").matches(resLine)
+//            if (nopen && !lineP) extraLine.add("\n")
+//            if (!lineP) nopen = true
+//            if (popen == lineP) {
+//                extraLine.add(if (popen) "</p>" else "<p>")
+//                popen = !popen
+//            }
+//            if (lineP) continue
+//            fun correct(op: Boolean, reg: Regex, rep: String, func: (Boolean) -> (Unit)) {
+//                var x = op
+//                while (reg.containsMatchIn(resLine)) {
+//                    val tempRange = reg.find(resLine)!!.range
+//                    val nextTag = if (x) rep.replace("<", "</") else rep
+//                    resLine = resLine.replaceRange(tempRange, nextTag)
+//                    x = !x
+//                }
+//                func(x)
+//            }
+////            while (Regex("""\*\*""").containsMatchIn(resLine)) {
+////                val tempRange = Regex("""\*\*""").find(resLine)!!.range
+////                val nextTag = if (bopen) "</b>" else "<b>"
+////                resLine = resLine.replaceRange(tempRange, nextTag)
+////                bopen = !bopen
+////            }
+////            while (Regex("""\*""").containsMatchIn(resLine)) {
+////                val tempRange = Regex("""\*""").find(resLine)!!.range
+////                val nextTag = if (iopen) "</i>" else "<i>"
+////                resLine = resLine.replaceRange(tempRange, nextTag)
+////                iopen = !iopen
+////            }
+////            while (Regex("""~~""").containsMatchIn(resLine)) {
+////                val tempRange = Regex("""~~""").find(resLine)!!.range
+////                val nextTag = if (sopen) "</s>" else "<s>"
+////                resLine = resLine.replaceRange(tempRange, nextTag)
+////                sopen = !sopen
+////            }
+//            correct(bopen, Regex("""\*\*"""), "<b>") { bopen = it }
+//            correct(iopen, Regex("""\*"""), "<i>") { iopen = it }
+//            correct(sopen, Regex("""~~"""), "<s>") { sopen = it }
+//            extraLine.add(resLine)
+//        }
+//        if (popen) extraLine.add("</p>")
+//    }
+//    writer.write(extraLine.joinToString(""))
+//    writer.write("</body></html>")
     writer.close()
 }
 
