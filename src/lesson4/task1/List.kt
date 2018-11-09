@@ -372,8 +372,8 @@ fun russian(n: Int): String {
             }
         }
         val temp1 = when {
-            res.last() == 'а' -> gamma[0]
             res.last() == 'ь' || (n / 1000) % 10 == 0 -> gamma[2]
+            res.last() == 'а' -> gamma[0]
             else -> gamma[1]
         }
         res += " $temp1"
