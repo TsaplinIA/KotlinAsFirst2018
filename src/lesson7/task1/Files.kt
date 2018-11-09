@@ -373,10 +373,16 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    val lines = File(inputName).readLines()
     val writer = File(outputName).bufferedWriter()
-    var b = lines
-            .joinToString("\n")
+    var reader = File(inputName).reader()
+    var str = mutableListOf<Char>()
+    var charNow = reader.read()
+    while (charNow != -1) {
+        str.add(charNow.toChar())
+        charNow = reader.read()
+    }
+    var b = str.joinToString("")
+    b = b.replace(Regex("""\n\n"""), "</p><p>")
     while (Regex("""\*\*(.|\n)*\*\*""").containsMatchIn(b)) {
         var nextTag = "<b>"
         repeat(2) {
@@ -401,7 +407,6 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
             nextTag = nextTag.replace("<", "</")
         }
     }
-    b = b.replace(Regex("""\n{2}"""), "</p><p>")
     val extraLine = mutableListOf("<html><body>")
     if (b.isNotEmpty()) {
         extraLine.addAll(listOf("<p>", b, "</p>", "</body></html>"))

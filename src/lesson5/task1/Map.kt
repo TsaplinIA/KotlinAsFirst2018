@@ -1,6 +1,7 @@
 @file:Suppress("UNUSED_PARAMETER", "ConvertCallChainIntoSequence")
 
 package lesson5.task1
+
 import lesson4.task1.meanMute
 
 /**
@@ -142,13 +143,13 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean = a.all 
  *   averageStockPrice(listOf("MSFT" to 100.0, "MSFT" to 200.0, "NFLX" to 40.0))
  *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
  */
-fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
-    val tempMap: MutableMap<String, MutableList<Double>> = mutableMapOf()
-    stockPrices.forEach { tempMap.getOrPut(it.first) { mutableListOf() }.add(it.second) }
-    val resMap: MutableMap<String, Double> = mutableMapOf()
-    for ((first, second) in tempMap) resMap[first] = meanMute(second)
-    return resMap
-}
+fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> = stockPrices
+        .groupBy { it.first }
+        .mapValues {
+            val s = it.value.size
+            it.value.map { it.second / s }.sum()
+        }
+
 
 /**
  * Средняя
@@ -166,11 +167,15 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *   ) -> "Мария"
  */
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
-    val mapNow = mutableListOf<Double>()
-    stuff.map { if (it.value.first == kind) mapNow.add(it.value.second) }
-    val min = mapNow.min()
-    stuff.filter { it.value.first == kind && it.value.second == min }.map { return it.key }
-    return null
+//    val mapNow = mutableListOf<Double>()
+//    stuff.map { if (it.value.first == kind) mapNow.add(it.value.second) }
+//    val min = mapNow.min()
+//    stuff.filter { it.value.first == kind && it.value.second == min }.map { return it.key }
+//    return null
+    return stuff
+            .filter { it.value.first == kind }
+            .minBy { it.value.second }
+            ?.key
 }
 
 /**
