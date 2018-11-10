@@ -3,7 +3,6 @@
 package lesson7.task1
 
 import java.io.File
-import kotlin.reflect.KMutableProperty
 
 /**
  * Пример
@@ -605,7 +604,45 @@ fun markdownToHtml(inputName: String, outputName: String) {
  *
  */
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+    val wtriter = File(outputName).bufferedWriter()
+    var rhvNow = rhv
+    val progress = mutableListOf<Int>()
+    progress.addAll(listOf(lhv, rhv))
+    do {
+        progress.add(lhv * (rhvNow % 10))
+        rhvNow /= 10
+    } while (rhvNow != 0)
+    progress.add(rhv * lhv)
+    val maxLenght = progress.last().toString().length
+    val progressStr = mutableListOf<String>()
+    var spaceCount = 0
+    for (i in 0 until progress.size) {
+        val temp = progress[i].toString()
+        val lNow = temp.length
+        if (i in 0..2 || i == progress.lastIndex) spaceCount = maxLenght - lNow else spaceCount--
+        progressStr.add(
+                listOf(
+                        when (i) {
+                            1 -> "*"
+                            in 0..2, progress.lastIndex -> " "
+                            else -> "+"
+                        },
+                        Array(spaceCount) { " " }
+                                .toList()
+                                .joinToString(""),
+                        temp).joinToString("")
+        )
+    }
+    val line = Array(maxLenght + 1) { "-" }.toList().joinToString("")
+    for (i in 0..progressStr.lastIndex) {
+        wtriter.write(progressStr[i])
+        wtriter.newLine()
+        if (i == 1 || i == progressStr.lastIndex - 1) {
+            wtriter.write(line)
+            wtriter.newLine()
+        }
+    }
+    wtriter.close()
 }
 
 
