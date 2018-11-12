@@ -3,6 +3,7 @@
 package lesson7.task1
 
 import java.io.File
+import kotlin.math.max
 
 /**
  * Пример
@@ -91,14 +92,13 @@ fun sibilants(inputName: String, outputName: String) {
             .flatMap { (f, s) -> listOf(f to s, f.toLowerCase() to s.toLowerCase()) }
     val outputStream = File(outputName).bufferedWriter()
     val lines = File(inputName).readLines()
-    val linesCount = lines.size - 1
-    lines.forEach {
-        var resStr = it
-        for (firstCh in wrongs) for ((err, corr) in rules) {
-            resStr = resStr.replace("$firstCh$err", "$firstCh$corr")
-        }
+    val linesCount = lines.lastIndex
+    lines.withIndex().forEach {
+        var resStr = it.value
+        for (firstCh in wrongs)
+            for ((err, corr) in rules) resStr = resStr.replace("$firstCh$err", "$firstCh$corr")
         outputStream.write(resStr)
-        if (lines.indexOf(it) < linesCount) outputStream.newLine()
+        if (it.index < linesCount) outputStream.newLine()
     }
     outputStream.close()
 }
@@ -126,10 +126,10 @@ fun centerFile(inputName: String, outputName: String) {
     if (lines.isNotEmpty()) {
         val maxL = lines.maxBy { it.length }!!.length
         val linesCount = lines.size
-        lines.forEach {
-            writer.write(Array((maxL - it.trim().length) / 2) { " " }.toList().joinToString(""))
-            writer.write(it.trim())
-            if (lines.indexOf(it) < linesCount) writer.newLine()
+        lines.withIndex().forEach {
+            writer.write(" ".repeat((maxL - it.value.trim().length) / 2))
+            writer.write(it.value.trim())
+            if (it.index < linesCount) writer.newLine()
         }
     }
     writer.close()
@@ -174,7 +174,7 @@ fun alignFileByWidth(inputName: String, outputName: String) {
         var strCount = 0
         for (parStr in lines) {
             val words = parStr.trim().split(Regex("""\s+"""))
-            if (parStr.replace(Regex("""\s+"""), "") == "" || words.size == 1)
+            if (parStr.isBlank() || words.size == 1)
                 writer.write(parStr.replace(Regex("""\s+"""), ""))
             else {
                 val strList = mutableListOf<String>()
@@ -231,7 +231,7 @@ fun top20Words(inputName: String): Map<String, Int> {
                 .toSet()
                 .toList()
         for (word in words) tempMap[word] = allWords.count { it == word }
-        tempMap.forEach { word, count -> resMap[word] = resMap.getOrPut(word) { 0 } + count }
+        tempMap.forEach { word, count -> resMap[word] = resMap.getOrDefault(word, 0) + count }
     }
     return resMap.toList().sortedBy { -it.second }.take(20).toMap()
 }
@@ -604,45 +604,45 @@ fun markdownToHtml(inputName: String, outputName: String) {
  *
  */
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
-    val wtriter = File(outputName).bufferedWriter()
+    val writer = File(outputName).bufferedWriter()
     var rhvNow = rhv
-    val progress = mutableListOf<Int>()
-    progress.addAll(listOf(lhv, rhv))
+    val steps = mutableListOf<Int>()
+    val strSteps = mutableListOf<String>()
+    var sCount = 0
+    steps.addAll(listOf(lhv, rhv))
     do {
-        progress.add(lhv * (rhvNow % 10))
+        steps.add(lhv * (rhvNow % 10))
         rhvNow /= 10
     } while (rhvNow != 0)
-    progress.add(rhv * lhv)
-    val maxLenght = progress.last().toString().length
-    val progressStr = mutableListOf<String>()
-    var spaceCount = 0
-    for (i in 0 until progress.size) {
-        val temp = progress[i].toString()
+    steps.add(rhv * lhv)
+    val maxL = steps.last().toString().length
+    for (i in 0 until steps.size) {
+        val temp = steps[i].toString()
         val lNow = temp.length
-        if (i in 0..2 || i == progress.lastIndex) spaceCount = maxLenght - lNow else spaceCount--
-        progressStr.add(
+        sCount = if (i in 0..2 || i == steps.lastIndex) maxL - lNow
+        else strSteps[i - 1].length - steps[i].toString().length - 2
+        strSteps.add(
                 listOf(
                         when (i) {
                             1 -> "*"
-                            in 0..2, progress.lastIndex -> " "
+                            in 0..2, steps.lastIndex -> " "
                             else -> "+"
                         },
-                        Array(spaceCount) { " " }
-                                .toList()
-                                .joinToString(""),
-                        temp).joinToString("")
+                        Array(sCount) { " " }.toList().joinToString(""),
+                        temp
+                ).joinToString("")
         )
     }
-    val line = Array(maxLenght + 1) { "-" }.toList().joinToString("")
-    for (i in 0..progressStr.lastIndex) {
-        wtriter.write(progressStr[i])
-        wtriter.newLine()
-        if (i == 1 || i == progressStr.lastIndex - 1) {
-            wtriter.write(line)
-            wtriter.newLine()
+    val line = Array(maxL + 1) { "-" }.toList().joinToString("")
+    for (i in 0..strSteps.lastIndex) {
+        writer.write(strSteps[i])
+        writer.newLine()
+        if (i == 1 || i == strSteps.lastIndex - 1) {
+            writer.write(line)
+            writer.newLine()
         }
     }
-    wtriter.close()
+    writer.close()
 }
 
 
@@ -667,6 +667,57 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  *
  */
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+    val listSteps = lhv.toString().toList().map { it.toString().toInt() }.toMutableList()
+    val process = mutableListOf<Pair<String, Int>>()
+    var digNow = 0
+    while (digNow < rhv) {
+        println("${listSteps.size}*")
+        digNow = digNow * 10 + listSteps[0]
+        listSteps.removeAt(0)
+    }
+    val writer = File(outputName).bufferedWriter()
+    do {
+        val minus = (digNow / rhv) * rhv
+        process.add("-$minus" to minus.toString().length)
+        digNow %= rhv
+        val digC = digNow.toString().length
+        val temp = mutableListOf("$digNow")
+        if (listSteps.isNotEmpty()) {
+            println("${listSteps.size}+")
+            digNow = 10 * digNow + listSteps[0]
+            temp.add(listSteps[0].toString())
+            listSteps.removeAt(0)
+        }
+        process.add(temp.joinToString("") to digC)
+    } while (listSteps.isNotEmpty() || digNow > rhv)
+    println(process)
+    println("wtf")
+    var sCount = 0
+    writer.write(" $lhv | $rhv")
+    for (i in 0 until process.size) {
+        writer.newLine()
+        when {
+            i == 0 -> writer.run {
+                write(process[i].first)
+                write(Array(4 + lhv.toString().length - process[i].first.length) { " " }.toList().joinToString(""))
+                write("${lhv / rhv}")
+                newLine()
+                write(Array(process[i].first.length) { "-" }.toList().joinToString(""))
+            }
+            i % 2 == 1 -> {
+                sCount += process[i - 1].second - process[i].second + 1
+                writer.write(Array(sCount) { " " }.toList().joinToString("") + process[i].first)
+            }
+            i % 2 == 0 -> {
+                sCount += process[i - 1].second - process[i].second
+                val temp = Array(sCount) { " " }.toList().joinToString("")
+                writer.write(temp + process[i].first)
+                writer.newLine()
+                writer.write(temp + Array(process[i].first.length) { "-" }.toList().joinToString(""))
+            }
+        }
+    }
+    writer.close()
+
 }
 
