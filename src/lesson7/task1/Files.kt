@@ -189,7 +189,7 @@ fun alignFileByWidth(inputName: String, outputName: String) {
                         needS--
                     }
                     if (strList.size < words.size * 2 - 1)
-                        strList.add(Array(countS + plus) { " " }.toList().joinToString(""))
+                        strList.add(" ".repeat(countS + plus))
                 }
                 writer.write(strList.joinToString(""))
             }
@@ -628,12 +628,12 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
                             in 0..2, steps.lastIndex -> " "
                             else -> "+"
                         },
-                        Array(sCount) { " " }.toList().joinToString(""),
+                        " ".repeat(sCount),
                         temp
                 ).joinToString("")
         )
     }
-    val line = Array(maxL + 1) { "-" }.toList().joinToString("")
+    val line = "-".repeat(maxL + 1)
     for (i in 0..strSteps.lastIndex) {
         writer.write(strSteps[i])
         writer.newLine()
