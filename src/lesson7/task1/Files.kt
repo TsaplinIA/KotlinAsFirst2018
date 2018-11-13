@@ -671,56 +671,97 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  */
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     val listSteps = lhv.toString().toList().map { it.toString().toInt() }.toMutableList()
-    val process = mutableListOf<Pair<String, Int>>()
+    val writer = File(outputName).bufferedWriter()
     var digNow = 0
-    while (digNow < rhv) {
-        println("${listSteps.size}*")
+    while (digNow < rhv && listSteps.isNotEmpty()) {
         digNow = digNow * 10 + listSteps[0]
         listSteps.removeAt(0)
     }
-    val writer = File(outputName).bufferedWriter()
-    do {
-        val minus = (digNow / rhv) * rhv
-        process.add("-$minus" to minus.toString().length)
-        digNow %= rhv
-        val digC = digNow.toString().length
-        val temp = mutableListOf("$digNow")
-        if (listSteps.isNotEmpty()) {
-            println("${listSteps.size}+")
-            digNow = 10 * digNow + listSteps[0]
-            temp.add(listSteps[0].toString())
-            listSteps.removeAt(0)
-        }
-        process.add(temp.joinToString("") to digC)
-    } while (listSteps.isNotEmpty() || digNow > rhv)
-    println(process)
-    println("wtf")
-    var sCount = 0
-    writer.write(" $lhv | $rhv")
-    for (i in 0 until process.size) {
-        writer.newLine()
-        when {
-            i == 0 -> writer.run {
-                write(process[i].first)
-                write(Array(4 + lhv.toString().length - process[i].first.length) { " " }.toList().joinToString(""))
-                write("${lhv / rhv}")
-                newLine()
-                write(Array(process[i].first.length) { "-" }.toList().joinToString(""))
-            }
-            i % 2 == 1 -> {
-                sCount += process[i - 1].second - process[i].second + 1
-                writer.write(Array(sCount) { " " }.toList().joinToString("") + process[i].first)
-            }
-            i % 2 == 0 -> {
-                sCount += process[i - 1].second - process[i].second
-                val temp = Array(sCount) { " " }.toList().joinToString("")
-                writer.write(temp + process[i].first)
-                writer.newLine()
-                writer.write(temp + Array(process[i].first.length) { "-" }.toList().joinToString(""))
-            }
-        }
+    var ost = digNow % rhv
+    digNow -= ost
+    var dCount = digNow.toString().length
+    var digNowStr = ""
+    var sCount = dCount - ost.toString().length + 1
+    writer.run {
+        write(" $lhv | $rhv")
+        newLine()
+        write("-$digNow${" ".repeat(lhv.toString().length + 3 - dCount)}${lhv / rhv}")
+        newLine()
+        write("-".repeat(dCount + 1))
     }
+    while (listSteps.isNotEmpty()) {
+        digNowStr = ost.toString() + listSteps[0]
+        digNow = ost * 10 + listSteps[0]
+        listSteps.removeAt(0)
+        writer.run {
+            newLine()
+            write(" ".repeat(sCount))
+            write(digNowStr)
+        }
+        val minus = (digNow / rhv) * rhv
+        sCount += digNowStr.toString().length - minus.toString().length - 1
+        writer.run {
+            newLine()
+            write("${" ".repeat(sCount)}-$minus")
+            newLine()
+            write("${" ".repeat(sCount)}${"-".repeat(minus.toString().length + 1)}")
+        }
+        ost = digNow - minus
+        dCount = minus.toString().length
+        sCount += dCount - ost.toString().length + 1
+    }
+    writer.newLine()
+    writer.write("${" ".repeat(sCount)}$ost")
     writer.close()
+}
 
+
+fun main(args: Array<String>) {
+    val lhv = 19935
+    val rhv = 22
+    val outputName = "C:\\Users\\AS\\Desktop\\out\\wtf.txt"
+    val listSteps = lhv.toString().toList().map { it.toString().toInt() }.toMutableList()
+    println(listSteps)
+    val writer = File(outputName).bufferedWriter()
+    var digNow = 0
+    while (digNow < rhv && listSteps.isNotEmpty()) {
+        digNow = digNow * 10 + listSteps[0]
+        listSteps.removeAt(0)
+    }
+    var ost = digNow % rhv
+    digNow -= ost
+    var dCount = digNow.toString().length
+    var sCount = dCount - ost.toString().length + 1
+    writer.run {
+        write(" $lhv | $rhv")
+        newLine()
+        write("-$digNow${" ".repeat(lhv.toString().length + 3 - dCount)}${lhv / rhv}")
+        newLine()
+        write("-".repeat(dCount + 1))
+    }
+    while (listSteps.isNotEmpty()) {
+        digNow = ost * 10 + listSteps[0]
+        listSteps.removeAt(0)
+        writer.run {
+            newLine()
+            write(" ".repeat(sCount))
+            write("$digNow")
+        }
+        val minus = (digNow / rhv) * rhv
+        println(minus)
+        sCount += digNow.toString().length - minus.toString().length - 1
+        writer.run {
+            newLine()
+            write("${" ".repeat(sCount)}-$minus")
+            newLine()
+            write("${" ".repeat(sCount)}${"-".repeat(minus.toString().length + 1)}")
+        }
+        ost = digNow - minus
+        dCount = minus.toString().length
+        sCount += dCount - ost.toString().length + 1
+    }
+    writer.newLine()
+    writer.write("${" ".repeat(sCount)}$ost")
+    writer.close()
 }
 
