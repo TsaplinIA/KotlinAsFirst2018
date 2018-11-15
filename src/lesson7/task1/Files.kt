@@ -678,20 +678,19 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         listSteps.removeAt(0)
     }
     var ost = digNow % rhv
-    var dCount = digNow.toString().length
     digNow -= ost
-    val temp = dCount -digNow.toString().length
-    dCount = digNow.toString().length
-    var digNowStr = ""
-    var sCount = dCount - ost.toString().length + 1 + temp
+    var dCount = digNow.toString().length
+    var digNowStr: String
+    var sCount = dCount - digNow.toString().length
     writer.run {
         write(" $lhv | $rhv")
         newLine()
-        write("${" ".repeat(temp)}-$digNow${" ".repeat(lhv.toString().length + 3 - dCount - temp)}${lhv / rhv}")
+        write("${" ".repeat(sCount)}-$digNow${" ".repeat(lhv.toString().length + 3 - dCount - sCount)}${lhv / rhv}")
         newLine()
-        write("${" ".repeat(temp)}")
+        write(" ".repeat(sCount))
         write("-".repeat(dCount + 1))
     }
+    sCount += dCount - ost.toString().length + 1
     while (listSteps.isNotEmpty()) {
         digNowStr = ost.toString() + listSteps[0]
         digNow = ost * 10 + listSteps[0]
@@ -702,12 +701,14 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
             write(digNowStr)
         }
         val minus = (digNow / rhv) * rhv
+        val temp = sCount + digNowStr.length - max(minus.toString().length + 1, digNow.toString().length)
         sCount += digNowStr.length - minus.toString().length - 1
         writer.run {
             newLine()
             write("${" ".repeat(sCount)}-$minus")
             newLine()
-            write("${" ".repeat(sCount)}${"-".repeat(minus.toString().length + 1)}")
+            write(" ".repeat(minOf(temp, sCount)))
+            write("-".repeat(max(minus.toString().length + 1, digNow.toString().length)))
         }
         ost = digNow - minus
         dCount = minus.toString().length
@@ -720,5 +721,6 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
 
 
 fun main(args: Array<String>) {
+    printDivisionProcess(666329, 16521, "C:\\Users\\AS\\Desktop\\out\\wtf.txt")
 }
 
