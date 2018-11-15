@@ -721,6 +721,54 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
 
 
 fun main(args: Array<String>) {
-    printDivisionProcess(666329, 16521, "C:\\Users\\AS\\Desktop\\out\\wtf.txt")
+    //printDivisionProcess(19935, 22, "C:\\Users\\AS\\Desktop\\out\\wtf.txt")
+
+    val lhv = 126910
+    val rhv = 64456
+    val outputName = "C:\\Users\\AS\\Desktop\\out\\wtf2.txt"
+    val listSteps = lhv.toString().toList().map { it.toString().toInt() }.toMutableList()
+    val writer = File(outputName).bufferedWriter()
+    var digNow = 0
+    var sCount = 1
+    var isFirst = true
+    while (digNow < rhv && listSteps.isNotEmpty()) {
+        digNow = digNow * 10 + listSteps[0]
+        listSteps.removeAt(0)
+    }
+    writer.write(" $lhv | $rhv")
+    val rep = lhv.toString().length - digNow.toString().length + 1
+    repeat(rep) {
+        var ost = digNow % rhv
+        val dCount = digNow.toString().length
+        val minus = digNow - ost
+        sCount += dCount - minus.toString().length - 1
+        writer.newLine()
+        writer.write(" ".repeat(sCount))
+        writer.write("-$minus")
+        println(sCount)
+        val temp = if (isFirst) sCount + minus.toString().length + 1
+        else max(minus.toString().length + 1, digNow.toString().length)
+        println(temp)
+        if (isFirst) {
+            writer.write(" ".repeat(lhv.toString().length + 3 - minus.toString().length - sCount))
+            writer.write("${lhv / rhv}")
+        }
+        writer.newLine()
+        if (!isFirst) writer.write(" ".repeat(1 + sCount + minus.toString().length - temp))
+        writer.write("-".repeat(temp))
+        var ostStr = ost.toString()
+        sCount += minus.toString().length - ostStr.length + 1
+        if (listSteps.isNotEmpty()) {
+            ost = ost * 10 + listSteps[0]
+            ostStr += listSteps[0].toString()
+            listSteps.removeAt(0)
+        }
+        writer.newLine()
+        writer.write(" ".repeat(sCount))
+        writer.write(ostStr)
+        digNow = ost
+        isFirst = false
+    }
+    writer.close()
 }
 
