@@ -375,45 +375,53 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    val writer = File(outputName).bufferedWriter()
-    var reader = File(inputName).reader()
-    var str = mutableListOf<Char>()
-    var charNow = reader.read()
-    while (charNow != -1) {
-        str.add(charNow.toChar())
-        charNow = reader.read()
-    }
-    var b = str.joinToString("")
-    b = b.replace(Regex("""\n\n"""), "</p><p>")
-    while (Regex("""\*\*(.|\n)*\*\*""").containsMatchIn(b)) {
-        var nextTag = "<b>"
-        repeat(2) {
-            val tempRange = Regex("""\*\*""").findAll(b).first().range
-            b = b.replaceRange(tempRange, nextTag)
-            nextTag = nextTag.replace("<", "</")
-        }
-    }
-    while (Regex("""\*(.|\n)*\*""").containsMatchIn(b)) {
-        var nextTag = "<i>"
-        repeat(2) {
-            val tempRange = Regex("""\*""").findAll(b).first().range
-            b = b.replaceRange(tempRange, nextTag)
-            nextTag = nextTag.replace("<", "</")
-        }
-    }
-    while (Regex("""~~(.|\n)*~~""").containsMatchIn(b)) {
-        var nextTag = "<s>"
-        repeat(2) {
-            val tempRange = Regex("""~~""").findAll(b).first().range
-            b = b.replaceRange(tempRange, nextTag)
-            nextTag = nextTag.replace("<", "</")
-        }
-    }
-    val extraLine = mutableListOf("<html><body>")
-    if (b.isNotEmpty()) {
-        extraLine.addAll(listOf("<p>", b, "</p>", "</body></html>"))
-    } else extraLine.add("</body></html>")
-    writer.write(extraLine.joinToString(""))
+    TODO()
+}
+//{
+//    val writer = File(outputName).bufferedWriter()
+//    var reader = File(inputName).reader()
+//    var str = mutableListOf<Char>()
+//    var charNow = reader.read()
+//    while (charNow != -1) {
+//        str.add(charNow.toChar())
+//        charNow = reader.read()
+//    }
+//    var b = str.joinToString("")
+//    b = b.replace(Regex("""\n\n"""), "</p><p>")
+//    while (Regex("""\*\*(.|\n)*\*\*""").containsMatchIn(b)) {
+//        var nextTag = "<b>"
+//        repeat(2) {
+//            val tempRange = Regex("""\*\*""").findAll(b).first().range
+//            b = b.replaceRange(tempRange, nextTag)
+//            nextTag = nextTag.replace("<", "</")
+//        }
+//    }
+//    while (Regex("""\*(.|\n)*\*""").containsMatchIn(b)) {
+//        var nextTag = "<i>"
+//        repeat(2) {
+//            val tempRange = Regex("""\*""").findAll(b).first().range
+//            b = b.replaceRange(tempRange, nextTag)
+//            nextTag = nextTag.replace("<", "</")
+//        }
+//    }
+//    while (Regex("""~~(.|\n)*~~""").containsMatchIn(b)) {
+//        var nextTag = "<s>"
+//        repeat(2) {
+//            val tempRange = Regex("""~~""").findAll(b).first().range
+//            b = b.replaceRange(tempRange, nextTag)
+//            nextTag = nextTag.replace("<", "</")
+//        }
+//    }
+//    val extraLine = mutableListOf("<html><body>")
+//    if (b.isNotEmpty()) {
+//        extraLine.addAll(listOf("<p>", b, "</p>", "</body></html>"))
+//    } else extraLine.add("</body></html>")
+//    writer.write(extraLine.joinToString(""))
+//    writer.close()
+//}
+
+
+
 //    writer.write("<html><body>")
 //    var extraLine = mutableListOf<String>()
 //    if (lines.isNotEmpty()) {
@@ -469,8 +477,8 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
 //    }
 //    writer.write(extraLine.joinToString(""))
 //    writer.write("</body></html>")
-    writer.close()
-}
+//    writer.close()
+//}
 
 /**
  * Сложная
