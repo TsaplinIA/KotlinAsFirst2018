@@ -194,7 +194,7 @@ fun lineByPoints(a: Point, b: Point): Line {
 fun bisectorByPoints(a: Point, b: Point): Line {
     val o = Point((a.x + b.x) / 2, (a.y + b.y) / 2)
     val angle = (lineByPoints(a, b).angle + PI / 2) % PI
-    return Line(o, angle)
+    return Line(o, angle % PI)
 }
 
 fun main(args: Array<String>) {
@@ -232,7 +232,7 @@ fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> {
  */
 fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
     val center = bisectorByPoints(a, b).crossPoint(bisectorByPoints(b, c))
-    return Circle(center, a.distance(center))
+    return Circle(center, max(a.distance(center), b.distance(center)))
 }
 
 /**
