@@ -116,7 +116,6 @@ fun diameter(vararg points: Point): Segment {
         for (i in 1..pointsList.lastIndex) segmentList.add(Segment(pointsList[0], pointsList[i]))
         pointsList.removeAt(0)
     }
-    segmentList.forEach { println(it.length) }
     return segmentList.maxBy { it.length }!!
 }
 
@@ -198,30 +197,6 @@ fun bisectorByPoints(a: Point, b: Point): Line {
     return Line(o, if (angle >= 0) angle else (PI + angle) % PI)
 }
 
-fun main(args: Array<String>) {
-    val p1 = Point(0.17881987294608181, -632.0)
-    val p2 = Point(0.2872732593441374, 0.7218265148398424)
-    val p3 = Point(-632.0, 0.21005159415743402)
-    val p4 = Point(-2.220446049250313e-16, 0.7751566578724906)
-    val p5 = Point(0.20564502010276142, 0.9155827183461711)
-    val p6 = Point(0.983939703604162, 0.8410946988921123)
-    val p7 = Point(-2.220446049250313e-16, 0.45600466970764564)
-    val p8 = Point(5e-324, 0.27484140434411486)
-    val p9 = Point(0.2338835157812158, 0.3003284730266935)
-    val p10 = Point(-5e-324, 0.3699706919019775)
-    val p11 = Point(5e-324, 0.16147622369422454)
-    val p12 = Point(0.5505475789627361, -2.220446049250313e-16)
-    val p13 = Point(-632.0, 0.0)
-    val p14 = Point(2.220446049250313e-16, 0.983773589099756)
-    val p15 = Point(0.8737139714518672, 0.49409623952655357)
-    val p16 = Point(5e-324, 0.0)
-    val p17 = Point(0.9547678809240446, 2.220446049250313e-16)
-    val p18 = Point(0.8908264353843057, 0.019278339493119967)
-    val p19 = Point(0.9297932618768963, 0.5677331488095688)
-    val p20 = Point(0.0, 0.2080649813509965)
-    println(diameter(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20).length)
-}
-
 /**
  * Средняя
  *
@@ -250,7 +225,6 @@ fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> {
  */
 fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
     val center = bisectorByPoints(a, b).crossPoint(bisectorByPoints(b, c))
-    println(center)
     return Circle(center, max(a.distance(center), b.distance(center)))
 }
 
@@ -270,6 +244,8 @@ fun minContainingCircle(vararg points: Point): Circle = TODO()
 //    when (points.size) {
 //        0 -> throw IllegalArgumentException()
 //        1 -> return Circle(points[0], 0.0)
+//        2 -> return circleByDiameter(Segment(points[0], points[1]))
+//        3 -> return circleByThreePoints(points[0], points[1], points[2])
 //    }
 //
 //}
