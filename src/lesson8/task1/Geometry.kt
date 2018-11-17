@@ -116,7 +116,7 @@ fun diameter(vararg points: Point): Segment {
         for (i in 1..pointsList.lastIndex) segmentList.add(Segment(pointsList[0], pointsList[1]))
         pointsList.removeAt(0)
     }
-    return segmentList.maxBy { it.length * 1000 }!!
+    return segmentList.maxBy { it.length }!!
 }
 
 /**
@@ -153,7 +153,7 @@ class Line private constructor(val b: Double, val angle: Double) {
      */
     fun crossPoint(other: Line): Point {
         val x = (other.b * cos(angle) - b * cos(other.angle)) / sin(angle - other.angle)
-        val y = (x * sin(other.angle) + other.b) / cos(other.angle)
+        val y = (other.b * sin(angle) - b * sin(other.angle)) / sin(angle - other.angle)
         return Point(x, y)
     }
 
@@ -198,15 +198,22 @@ fun bisectorByPoints(a: Point, b: Point): Line {
 }
 
 fun main(args: Array<String>) {
-    val a = Point(0.6446096454927298, -632.0)
-    val b = Point(-632.0, 5e-324)
-    val c = Point(0.8937450093794882, -5e-324)
-    val s = bisectorByPoints(c, b)
-    println(s)
-    println(bisectorByPoints(c, b).angle)
-    println(sin(s.angle))
-    val center = bisectorByPoints(a, b).crossPoint(bisectorByPoints(c, a))
-    println(center)
+    val a = Point(0.27283105519280193, 0.1406089556562914)
+    val b = Point(0.054117770586511016, -632.0)
+    val c = Point(-632.0, -632.0)
+    val h1 = bisectorByPoints(c, b)
+    val h2 = bisectorByPoints(a, b)
+    val h3 = bisectorByPoints(c, a)
+    val center12 = h1.crossPoint(h2)
+    val center13 = h1.crossPoint(h3)
+    val center23 = h2.crossPoint(h3)
+    println(center12 == center13)
+    println(center23 == center12)
+    println(center23 == center13)
+    println(center12)
+    println(center13)
+    println(center23)
+    println(circleByThreePoints(a, b, c))
 }
 
 /**
@@ -237,6 +244,7 @@ fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> {
  */
 fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
     val center = bisectorByPoints(a, b).crossPoint(bisectorByPoints(b, c))
+    println(center)
     return Circle(center, max(a.distance(center), b.distance(center)))
 }
 
