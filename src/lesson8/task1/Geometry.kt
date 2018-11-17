@@ -116,7 +116,7 @@ fun diameter(vararg points: Point): Segment {
         for (i in 1..pointsList.lastIndex) segmentList.add(Segment(pointsList[0], pointsList[1]))
         pointsList.removeAt(0)
     }
-    return segmentList.maxBy { it.length }!!
+    return segmentList.maxBy { it.length * 1000 }!!
 }
 
 /**
