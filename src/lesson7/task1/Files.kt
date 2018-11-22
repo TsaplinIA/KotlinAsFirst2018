@@ -687,13 +687,20 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         digNow = digNow * 10 + listSteps[0]
         listSteps.removeAt(0)
     }
-    writer.write(" $lhv | $rhv")
     val rep = lhv.toString().length - digNow.toString().length + 1
     var dCount = 0
     repeat(rep) {
         var ost = digNow % rhv
         if (isFirst) dCount = digNow.toString().length
         val minus = digNow - ost
+        if (isFirst && digNow.toString().length > minus.toString().length) {
+            sCount = 0
+        }
+        if (isFirst) {
+            writer.write(" ".repeat(sCount))
+            writer.write("$lhv | $rhv")
+        }
+        val tempS = sCount
         sCount += dCount - minus.toString().length - 1
         writer.newLine()
         writer.write(" ".repeat(sCount))
@@ -703,7 +710,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         else max(minus.toString().length + 1, digNow.toString().length)
         println(temp)
         if (isFirst) {
-            writer.write(" ".repeat(lhv.toString().length + 3 - minus.toString().length - sCount))
+            writer.write(" ".repeat(lhv.toString().length + 2 - minus.toString().length - sCount + tempS))
             writer.write("${lhv / rhv}")
         }
         writer.newLine()
