@@ -3,13 +3,15 @@ package lesson8.task3
 import java.util.*
 
 class Graph {
-    private data class Vertex(val name: String) {
+    data class Vertex(val name: String) {
         val neighbors = mutableSetOf<Vertex>()
     }
 
-    private val vertices = mutableMapOf<String, Vertex>()
+    val vertices = mutableMapOf<String, Vertex>()
 
     private operator fun get(name: String) = vertices[name] ?: throw IllegalArgumentException()
+
+    fun allVertexName() = vertices.toList().map { it.first }
 
     fun addVertex(name: String) {
         vertices[name] = Vertex(name)

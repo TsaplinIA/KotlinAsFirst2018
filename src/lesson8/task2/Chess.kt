@@ -2,6 +2,7 @@
 
 package lesson8.task2
 
+import lesson8.task3.Graph
 import java.awt.Point
 import java.lang.IllegalArgumentException
 import kotlin.math.abs
@@ -28,10 +29,6 @@ data class Square(val column: Int, val row: Int) {
      * Для клетки не в пределах доски вернуть пустую строку
      */
     fun notation(): String = if (inside()) "${(column + 'a'.toInt() - 1).toChar()}$row" else ""
-}
-
-fun main(args: Array<String>) {
-    bishopTrajectory(square("a3"), square("e7"))
 }
 
 fun boolToInt(b: Boolean) = Math.abs(b.toString().length - 5)
@@ -244,7 +241,7 @@ fun kingTrajectory(start: Square, end: Square): List<Square> {
  * Пример: knightMoveNumber(Square(3, 1), Square(6, 3)) = 3.
  * Конь может последовательно пройти через клетки (5, 2) и (4, 4) к клетке (6, 3).
  */
-fun knightMoveNumber(start: Square, end: Square): Int = TODO()
+fun knightMoveNumber(start: Square, end: Square): Int = tableForKnight().bfs(start.notation(), end.notation())
 
 /**
  * Очень сложная
@@ -266,4 +263,47 @@ fun knightMoveNumber(start: Square, end: Square): Int = TODO()
  *
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
-fun knightTrajectory(start: Square, end: Square): List<Square> = TODO()
+fun knightTrajectory(start: Square, end: Square): List<Square> {
+    val tempMap = mutableMapOf(start.notation() to listOf(start.notation()))
+    val addList = mutableListOf(start.notation())
+    repeat(knightMoveNumber(start, end)) {
+        val nextList = mutableListOf<String>()
+        addList.forEach { now ->
+            knightCan(square(now))
+                    .map { it.notation() }
+                    .forEach {
+                        nextList.add(it)
+                        tempMap[it] = tempMap[now]!! + listOf(it)
+                    }
+        }
+        addList.clear()
+        addList.addAll(nextList)
+    }
+    return tempMap[end.notation()]!!.map { square(it) }
+}
+
+
+fun knightCan(start: Square): List<Square> = mutableListOf(
+        Pair(2, 1),
+        Pair(2, -1),
+        Pair(-2, 1),
+        Pair(-2, -1)
+)
+        .flatMap { listOf(it, it.second to it.first) }
+        .map { Square(it.first + start.column, it.second + start.row) }
+        .filter { it.inside() }
+
+fun tableForKnight(): Graph {
+    val g = Graph()
+    for (i in 'a'..'h')
+        for (j in 1..8) {
+            g.addVertex(i.toString() + j.toString())
+        }
+    g.allVertexName().forEach { name ->
+        knightCan(square(name))
+                .map { it.notation() }
+                .forEach { g.connect(it, name) }
+    }
+    return g
+}
+data class Swl(val s: Square, val l: List<Square>) // SquareWithList
