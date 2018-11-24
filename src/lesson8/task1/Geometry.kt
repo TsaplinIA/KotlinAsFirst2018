@@ -241,12 +241,18 @@ fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
  */
 fun minContainingCircle(vararg points: Point): Circle = TODO()
 //{
+//    val pointsList = points.toMutableList()
 //    when (points.size) {
 //        0 -> throw IllegalArgumentException()
 //        1 -> return Circle(points[0], 0.0)
 //        2 -> return circleByDiameter(Segment(points[0], points[1]))
-//        3 -> return circleByThreePoints(points[0], points[1], points[2])
 //    }
-//
+//    val n = points.size// # число точек
+//    val minX = pointsList.sortedBy { it.x }.first().x
+//    val p = pointsList.filter { it.x == minX }.sortedBy { it.y }.first()
+//    //P = range(n) # список номеров точек
+//    for (i in 1..n) {
+//        print("")
+//    }
+//    return Circle(Point(0.0, 0.0), 123.0)
 //}
-

@@ -422,7 +422,6 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
 //}
 
 
-
 //    writer.write("<html><body>")
 //    var extraLine = mutableListOf<String>()
 //    if (lines.isNotEmpty()) {
@@ -682,46 +681,50 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     val listSteps = lhv.toString().toList().map { it.toString().toInt() }.toMutableList()
     val writer = File(outputName).bufferedWriter()
     var digNow = 0
-    var sCount = 1
-    var isFirst = true
     while (digNow < rhv && listSteps.isNotEmpty()) {
         digNow = digNow * 10 + listSteps[0]
         listSteps.removeAt(0)
     }
-    writer.write(" $lhv | $rhv")
-    val rep = lhv.toString().length - digNow.toString().length + 1
-    var dCount = 0
+    val rep = digitNumber(lhv) - digitNumber(digNow) + 1
+    var ostStr = digNow.toString()
+    var minus = digNow / rhv * rhv
+    var ost: Int
+    var isFirst = true
+    var sCount = if (digitNumber(digNow) > digitNumber(minus)) 0 else 1
+    writer.write(" ".repeat(sCount) + "$lhv | $rhv")
     repeat(rep) {
-        var ost = digNow % rhv
-        if (isFirst) dCount = digNow.toString().length
-        val minus = digNow - ost
-        sCount += dCount - minus.toString().length - 1
-        writer.newLine()
-        writer.write(" ".repeat(sCount))
-        writer.write("-$minus")
-        println(sCount)
-        val temp = if (isFirst) sCount + minus.toString().length + 1
-        else max(minus.toString().length + 1, digNow.toString().length)
-        println(temp)
+        minus = digNow / rhv * rhv
+        sCount += ostStr.length - digitNumber(minus) - 1
+        writer.run {
+            newLine()
+            write(" ".repeat(sCount))
+            write("-$minus")
+        }
         if (isFirst) {
-            writer.write(" ".repeat(lhv.toString().length + 3 - minus.toString().length - sCount))
-            writer.write("${lhv / rhv}")
+            val sBeforeAnswer = digitNumber(lhv) + 3 - sCount - digitNumber(minus)
+            writer.write(" ".repeat(sBeforeAnswer))
+            writer.write("${(lhv / rhv)}")
         }
-        writer.newLine()
-        if (!isFirst) writer.write(" ".repeat(1 + sCount + minus.toString().length - temp))
-        writer.write("-".repeat(temp))
-        var ostStr = ost.toString()
-        sCount += minus.toString().length - ostStr.length + 1
+        val accCount = maxOf(digitNumber(digNow), digitNumber(minus) + 1)
+        val sBeforeAcc = minOf(sCount + 1 + digitNumber(minus) - digitNumber(digNow), sCount)
+        writer.run {
+            newLine()
+            write(" ".repeat(sBeforeAcc))
+            write("-".repeat(accCount))
+        }
+        ost = digNow - minus
         if (listSteps.isNotEmpty()) {
-            ost = ost * 10 + listSteps[0]
-            ostStr += listSteps[0].toString()
+            ostStr = ost.toString() + listSteps[0].toString()
             listSteps.removeAt(0)
+        } else ostStr = ost.toString()
+        val sBeforeOst = sBeforeAcc + accCount - digitNumber(ost)
+        writer.run {
+            newLine()
+            write(" ".repeat(sBeforeOst))
+            write(ostStr)
         }
-        writer.newLine()
-        writer.write(" ".repeat(sCount))
-        writer.write(ostStr)
-        digNow = ost
-        dCount = ostStr.length
+        digNow = ostStr.toInt()
+        sCount = sBeforeOst
         isFirst = false
     }
     writer.close()
@@ -729,29 +732,5 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
 
 
 fun main(args: Array<String>) {
-    printDivisionProcess(173128, 91295, "C:\\Users\\AS\\Desktop\\out\\wtf.txt")
-    val lhv = 173128
-    val rhv = 91295
-    val outputName = "C:\\Users\\AS\\Desktop\\out\\wtf2.txt"
-    val listSteps = lhv.toString().toList().map { it.toString().toInt() }.toMutableList()
-    val writer = File(outputName).bufferedWriter()
-    var digNow = 0
-    while (digNow < rhv && listSteps.isNotEmpty()) {
-        digNow = digNow * 10 + listSteps[0]
-        listSteps.removeAt(0)
-    }
-    var isFirst = true
-    val rep = digitNumber(lhv) - digitNumber(digNow) + 1
-    var sCount = if (digitNumber(lhv) > digitNumber((digNow / rhv) * rhv)) 0 else 1
-    repeat(rep) {
-        if (isFirst) {
-            writer.write(" ".repeat(sCount))
-            writer.write("$lhv | $rhv")
-        }
-        val ost = digNow % rhv
-        val minus = digNow - ost
-        //sCount +=
-    }
-    writer.close()
 }
 
