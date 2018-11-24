@@ -701,7 +701,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
             write("-$minus")
         }
         if (isFirst) {
-            val sBeforeAnswer = digitNumber(lhv) + 3 - sCount - digitNumber(minus)
+            val sBeforeAnswer = digitNumber(lhv) + 3 - ostStr.length
             writer.write(" ".repeat(sBeforeAnswer))
             writer.write("${(lhv / rhv)}")
         }
