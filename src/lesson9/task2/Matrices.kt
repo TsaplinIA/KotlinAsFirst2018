@@ -48,43 +48,43 @@ operator fun Matrix<Int>.plus(other: Matrix<Int>): Matrix<Int> {
     return result
 }
 
-fun goToSpiral(g: Matrix<Int>, x1: Int, x2: Int): Matrix<Int> {
-    var number = 1
-    var col = 0
-    var row = 0
-    val rep = g.height / 2 + g.height % 2
-    fun magic() {
-        g[col, row] = number
-        number += x1
-    }
-    repeat(rep) {
-        val rowRep = g.width - 2 * col - 1
-        val colRep = g.height - 2 * row - 1
-        repeat(rowRep) {
-            magic()
-            row++
-        }
-        repeat(colRep) {
-            magic()
-            col++
-        }
-        if (colRep != 0) {
-            repeat(rowRep) {
-                magic()
-                row--
-            }
-            repeat(colRep) {
-                magic()
-                col--
-            }
-        }
-        g[col, row] = if (row == 0) 1 else g[col, row - 1] + 1
-        number += x2
-        col++
-        row++
-    }
-    return g
-}
+//fun goToSpiral(g: Matrix<Int>, x1: Int, x2: Int): Matrix<Int> {
+//    var number = 1
+//    var col = 0
+//    var row = 0
+//    val rep = g.height / 2 + g.height % 2
+//    fun magic() {
+//        g[col, row] = number
+//        number += x1
+//    }
+//    repeat(rep) {
+//        val rowRep = g.width - 2 * col - 1
+//        val colRep = g.height - 2 * row - 1
+//        repeat(rowRep) {
+//            magic()
+//            row++
+//        }
+//        repeat(colRep) {
+//            magic()
+//            col++
+//        }
+//        if (colRep != 0) {
+//            repeat(rowRep) {
+//                magic()
+//                row--
+//            }
+//            repeat(colRep) {
+//                magic()
+//                col--
+//            }
+//        }
+//        g[col, row] = if (row == 0) 1 else g[col, row - 1] + 1
+//        number += x2
+//        col++
+//        row++
+//    }
+//    return g
+//}
 
 /**
  * Сложная
@@ -103,7 +103,7 @@ fun goToSpiral(g: Matrix<Int>, x1: Int, x2: Int): Matrix<Int> {
  *  a a a a a
  *  a a a a a
  */
-fun generateSpiral(height: Int, width: Int): Matrix<Int> = goToSpiral(createMatrix(height, width, 0), 1, 0)
+fun generateSpiral(height: Int, width: Int): Matrix<Int> = TODO()//goToSpiral(createMatrix(height, width, 0), 1, 0)
 
 /**
  * Сложная
