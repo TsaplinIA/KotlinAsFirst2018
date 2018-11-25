@@ -1,4 +1,5 @@
 @file:Suppress("UNUSED_PARAMETER")
+
 package lesson9.task2
 
 import lesson9.task1.Matrix
@@ -47,6 +48,42 @@ operator fun Matrix<Int>.plus(other: Matrix<Int>): Matrix<Int> {
     return result
 }
 
+fun goToSpiral(g: Matrix<Int>, x1: Int, x2: Int): Matrix<Int> {
+    var number = 1
+    var col = 0
+    var row = 0
+    val rep = g.height / 2 + g.height % 2
+    fun magic() {
+        g[col, row] = number
+        number += x1
+    }
+    repeat(rep) {
+        val rowRep = g.width - 2 * col - 1
+        val colRep = g.height - 2 * row - 1
+        repeat(rowRep) {
+            magic()
+            row++
+        }
+        repeat(colRep) {
+            magic()
+            col++
+        }
+        repeat(rowRep) {
+            magic()
+            row--
+        }
+        repeat(colRep) {
+            magic()
+            col--
+        }
+        g[col, row] = if (row == 0) 1 else g[col, row - 1] + 1
+        number += x2
+        col++
+        row++
+    }
+    return g
+}
+
 /**
  * Сложная
  *
@@ -58,8 +95,13 @@ operator fun Matrix<Int>.plus(other: Matrix<Int>): Matrix<Int> {
  *  1  2  3  4
  * 10 11 12  5
  *  9  8  7  6
+ *  a a a a a
+ *  a a a a a
+ *  a a a a a
+ *  a a a a a
+ *  a a a a a
  */
-fun generateSpiral(height: Int, width: Int): Matrix<Int> = TODO()
+fun generateSpiral(height: Int, width: Int): Matrix<Int> = goToSpiral(createMatrix(height, width, 0), 1, 0)
 
 /**
  * Сложная
@@ -75,7 +117,7 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> = TODO()
  *  1  2  2  2  2  1
  *  1  1  1  1  1  1
  */
-fun generateRectangles(height: Int, width: Int): Matrix<Int> = TODO()
+fun generateRectangles(height: Int, width: Int): Matrix<Int> = goToSpiral(createMatrix(height, width, 0), 0, 1)
 
 /**
  * Сложная

@@ -82,9 +82,12 @@ class MatrixImpl<E>(override val height: Int, override val width: Int, type: E) 
         }
         return resList.joinToString("")
     }
-}
 
-fun main(args: Array<String>) {
-    printDivisionProcess(52805, 68075, "C:\\Users\\AS\\Desktop\\out\\wtf2.txt")
+    override fun hashCode(): Int {
+        var result = height
+        result = 31 * result + width
+        result = 31 * result + matrixBody.hashCode()
+        return result
+    }
 }
 
