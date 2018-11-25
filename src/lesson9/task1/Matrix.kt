@@ -24,6 +24,7 @@ interface Matrix<E> {
      * Методы могут бросить исключение, если ячейка не существует или пуста
      */
     operator fun get(row: Int, column: Int): E
+
     operator fun get(cell: Cell): E
 
     /**
@@ -31,6 +32,7 @@ interface Matrix<E> {
      * Методы могут бросить исключение, если ячейка не существует
      */
     operator fun set(row: Int, column: Int, value: E)
+
     operator fun set(cell: Cell, value: E)
 }
 
@@ -73,10 +75,13 @@ class MatrixImpl<E>(override val height: Int, override val width: Int, type: E) 
 
     override fun toString(): String {
         val resList = mutableListOf<String>()
+        val k = matrixBody.map { it.maxBy { it.toString().length }.toString().length }.max()
         for (i in 0 until height) {
             for (j in 0 until width) {
+                val sNow = matrixBody[i][j].toString()
+                if (k != null) resList.add(" ".repeat(k - sNow.length))
                 resList.add(matrixBody[i][j].toString())
-                if (j != width - 1) resList.add(" ")
+                resList.add("|")
             }
             if (i != height - 1) resList.add("\n")
         }

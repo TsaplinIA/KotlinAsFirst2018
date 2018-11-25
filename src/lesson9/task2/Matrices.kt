@@ -68,13 +68,15 @@ fun goToSpiral(g: Matrix<Int>, x1: Int, x2: Int): Matrix<Int> {
             magic()
             col++
         }
-        repeat(rowRep) {
-            magic()
-            row--
-        }
-        repeat(colRep) {
-            magic()
-            col--
+        if (colRep != 0) {
+            repeat(rowRep) {
+                magic()
+                row--
+            }
+            repeat(colRep) {
+                magic()
+                col--
+            }
         }
         g[col, row] = if (row == 0) 1 else g[col, row - 1] + 1
         number += x2
@@ -145,7 +147,16 @@ fun generateSnake(height: Int, width: Int): Matrix<Int> = TODO()
  * 4 5 6      8 5 2
  * 7 8 9      9 6 3
  */
-fun <E> rotate(matrix: Matrix<E>): Matrix<E> = TODO()
+fun <E> rotate(matrix: Matrix<E>): Matrix<E> {
+    if (matrix.width != matrix.height) throw IllegalArgumentException()
+    val g = transpose(matrix)
+    val e = matrix
+    var now = matrix.width
+    for (i in 0 until e.height)
+        for (j in 0 until e.width)
+            e[i, j] = g[i, e.width - j]
+    return e
+}
 
 /**
  * Сложная
@@ -328,3 +339,7 @@ fun fifteenGameMoves(matrix: Matrix<Int>, moves: List<Int>): Matrix<Int> = TODO(
  * Перед решением этой задачи НЕОБХОДИМО решить предыдущую
  */
 fun fifteenGameSolution(matrix: Matrix<Int>): List<Int> = TODO()
+
+fun main(args: Array<String>) {
+    print(generateSpiral(3, 5))
+}
