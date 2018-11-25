@@ -103,7 +103,7 @@ fun goToSpiral(g: Matrix<Int>, x1: Int, x2: Int): Matrix<Int> {
  *  a a a a a
  *  a a a a a
  */
-fun generateSpiral(height: Int, width: Int): Matrix<Int> = goToSpiral(createMatrix(height, width, 0), 1, 0)
+fun generateSpiral(height: Int, width: Int): Matrix<Int> = TODO()//goToSpiral(createMatrix(height, width, 0), 1, 0)
 
 /**
  * Сложная
