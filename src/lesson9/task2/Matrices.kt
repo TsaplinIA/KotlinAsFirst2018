@@ -103,7 +103,7 @@ fun goToSpiral(g: Matrix<Int>, x1: Int, x2: Int): Matrix<Int> {
  *  a a a a a
  *  a a a a a
  */
-fun generateSpiral(height: Int, width: Int): Matrix<Int> = TODO()//goToSpiral(createMatrix(height, width, 0), 1, 0)
+fun generateSpiral(height: Int, width: Int): Matrix<Int> = goToSpiral(createMatrix(height, width, 0), 1, 0)
 
 /**
  * Сложная
@@ -119,7 +119,7 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> = TODO()//goToSpiral(cr
  *  1  2  2  2  2  1
  *  1  1  1  1  1  1
  */
-fun generateRectangles(height: Int, width: Int): Matrix<Int> = goToSpiral(createMatrix(height, width, 0), 0, 1)
+fun generateRectangles(height: Int, width: Int): Matrix<Int> = TODO()//goToSpiral(createMatrix(height, width, 0), 0, 1)
 
 /**
  * Сложная
@@ -341,5 +341,5 @@ fun fifteenGameMoves(matrix: Matrix<Int>, moves: List<Int>): Matrix<Int> = TODO(
 fun fifteenGameSolution(matrix: Matrix<Int>): List<Int> = TODO()
 
 fun main(args: Array<String>) {
-    print(generateSpiral(19, 30))
+    print(generateSpiral(10, 2))
 }
