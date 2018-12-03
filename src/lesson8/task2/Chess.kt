@@ -286,4 +286,3 @@ fun tableForKnight(): Graph {
     }
     return g
 }
-data class Swl(val s: Square, val l: List<Square>) // SquareWithList
