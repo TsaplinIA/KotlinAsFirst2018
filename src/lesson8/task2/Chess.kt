@@ -39,8 +39,9 @@ fun boolToInt(b: Boolean) = Math.abs(b.toString().length - 5)
  * В нотации, колонки обозначаются латинскими буквами от a до h, а ряды -- цифрами от 1 до 8.
  * Если нотация некорректна, бросить IllegalArgumentException
  */
-fun square(notation: String): Square = if (!Regex("[a-h][1-8]").matches(notation))
-    throw IllegalArgumentException() else Square((notation[0] - 'a') + 1, notation[1].toString().toInt())
+fun square(notation: String): Square =
+        if (!Regex("[a-h][1-8]").matches(notation)) throw IllegalArgumentException()
+        else Square((notation[0] - 'a') + 1, notation[1].toString().toInt())
 
 /**
  * Простая
@@ -65,9 +66,9 @@ fun square(notation: String): Square = if (!Regex("[a-h][1-8]").matches(notation
  * Пример: rookMoveNumber(Square(3, 1), Square(6, 3)) = 2
  * Ладья может пройти через клетку (3, 3) или через клетку (6, 1) к клетке (6, 3).
  */
-fun rookMoveNumber(start: Square, end: Square): Int = if (!start.inside() || !end.inside())
-    throw IllegalArgumentException()
-else 2 - boolToInt(start.row == end.row) - boolToInt(start.column == end.column)
+fun rookMoveNumber(start: Square, end: Square): Int =
+        if (!start.inside() || !end.inside()) throw IllegalArgumentException()
+        else 2 - boolToInt(start.row == end.row) - boolToInt(start.column == end.column)
 
 /**
  * Средняя
@@ -83,13 +84,7 @@ else 2 - boolToInt(start.row == end.row) - boolToInt(start.column == end.column)
  *          rookTrajectory(Square(3, 5), Square(8, 5)) = listOf(Square(3, 5), Square(8, 5))
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
-fun rookTrajectory(start: Square, end: Square): List<Square> {
-    val resSet = mutableSetOf<Square>()
-    resSet.add(start)
-    resSet.add(Square(start.column, end.row))
-    resSet.add(end)
-    return resSet.toList()
-}
+fun rookTrajectory(start: Square, end: Square): List<Square> = setOf(start, Square(start.column, end.row), end).toList()
 
 /**
  * Простая
@@ -263,25 +258,10 @@ fun knightMoveNumber(start: Square, end: Square): Int = tableForKnight().bfs(sta
  *
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
-fun knightTrajectory(start: Square, end: Square): List<Square> {
-    val tempMap = mutableMapOf(start.notation() to listOf(start.notation()))
-    val addList = mutableListOf(start.notation())
-    repeat(knightMoveNumber(start, end)) {
-        val nextList = mutableListOf<String>()
-        addList.forEach { now ->
-            knightCan(square(now))
-                    .map { it.notation() }
-                    .forEach {
-                        nextList.add(it)
-                        tempMap[it] = tempMap[now]!! + listOf(it)
-                    }
-        }
-        addList.clear()
-        addList.addAll(nextList)
-    }
-    return tempMap[end.notation()]!!.map { square(it) }
-}
-
+fun knightTrajectory(start: Square, end: Square): List<Square> =
+        tableForKnight()
+                .bfsWithList(Graph.Vertex(start.notation()), Graph.Vertex(end.notation()))
+                .map { square(it) }
 
 fun knightCan(start: Square): List<Square> = mutableListOf(
         Pair(2, 1),

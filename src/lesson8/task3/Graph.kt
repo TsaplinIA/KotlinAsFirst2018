@@ -51,6 +51,33 @@ class Graph {
         return -1
     }
 
+    fun bfsWithList(start: Vertex, finish: Vertex): List<String> {
+        val prev = mutableMapOf<Graph.Vertex, Graph.Vertex>()
+        prev[start] = Vertex("-1")
+        val queue = ArrayDeque<Vertex>()
+        queue.add(start)
+        val visited = mutableMapOf(start to 0)
+        while (queue.isNotEmpty()) {
+            val cur = queue.first
+            val next = queue.poll()
+            val distance = visited[next]!!
+            if (next == finish) break
+            for (neighbor in next.neighbors) {
+                if (neighbor in visited) continue
+                visited.put(neighbor, distance + 1)
+                queue.add(neighbor)
+                prev[neighbor] = cur
+            }
+        }
+        val path = mutableListOf<Graph.Vertex>()
+        var cur = finish
+        path.add(cur)
+        while (prev[cur] != Vertex("-1")) {
+            cur = prev[cur]!!
+            path.add(cur)
+        }
+        return path.map { it.name }.reversed().toList()
+    }
     /**
      * Пример
      *

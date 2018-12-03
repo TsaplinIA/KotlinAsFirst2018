@@ -57,7 +57,7 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  */
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
     val resMap = mutableMapOf<String, Int>()
-    val line = File(inputName).readLines().joinToString("\n") { it.toLowerCase() }
+    val line = File(inputName).readText().toLowerCase()
     val muteSubs = substrings.toMutableList()
     var res = 0
     var indexStart = 0
@@ -733,4 +733,3 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
 
 fun main(args: Array<String>) {
 }
-
