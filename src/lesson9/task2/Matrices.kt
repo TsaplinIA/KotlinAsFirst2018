@@ -68,45 +68,47 @@ operator fun Matrix<Int>.plus(other: Matrix<Int>): Matrix<Int> {
  *  a a a a a
  *  a a a a a
  */
-fun generateSpiral(height: Int, width: Int): Matrix<Int> {
-    val g = createMatrix(height, width, 0)
-    val rep = height / 2 + height % 2
-    var col = 0
-    var row = 0
-    var number = 1
-    repeat(1) {
-        val rep2 = width - 2 * col - 1
-        val rep3 = height - 2 * row - 1
-        repeat(rep2) {
-            g[col, row] = number
-            number++
-            row++
-        }
-        if (rep3 != 0) {
-            repeat(rep3) {
-                g[col, row] = number
-                number++
-                col++
-            }
-            repeat(rep2) {
-                g[col, row] = number
-                number++
-                row--
-            }
-            repeat(rep2) {
-                g[col, row] = number
-                number++
-                col--
-            }
-        }
-        print(col)
-        print(row)
-        g[col, row] = if (col == 0 && row == 0) 1 else g[col, row - 1] + 1
-        col++
-        row++
-    }
-    return g
-}//goToSpiral(createMatrix(height, width, 0), 1, 0)
+fun generateSpiral(height: Int, width: Int): Matrix<Int> = TODO()
+//{
+//    val g = createMatrix(height, width, 0)
+//    val rep = height / 2 + height % 2
+//    var col = 0
+//    var row = 0
+//    var number = 1
+//    repeat(1) {
+//        val rep2 = width - 2 * col - 1
+//        val rep3 = height - 2 * row - 1
+//        repeat(rep2) {
+//            g[col, row] = number
+//            number++
+//            row++
+//        }
+//        if (rep3 != 0) {
+//            repeat(rep3) {
+//                g[col, row] = number
+//                number++
+//                col++
+//            }
+//            repeat(rep2) {
+//                g[col, row] = number
+//                number++
+//                row--
+//            }
+//            repeat(rep2) {
+//                g[col, row] = number
+//                number++
+//                col--
+//            }
+//        }
+//        print(col)
+//        print(row)
+//        g[col, row] = if (col == 0 && row == 0) 1 else g[col, row - 1] + 1
+//        col++
+//        row++
+//    }
+//    return g
+//}
+//goToSpiral(createMatrix(height, width, 0), 1, 0)
 
 /**
  * Сложная

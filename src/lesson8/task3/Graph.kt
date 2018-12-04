@@ -51,6 +51,8 @@ class Graph {
         return -1
     }
 
+    fun bfsWithList(start: String, finish: String) = bfsWithList(this[start], this[finish])
+
     fun bfsWithList(start: Vertex, finish: Vertex): List<String> {
         val prev = mutableMapOf<Graph.Vertex, Graph.Vertex>()
         prev[start] = Vertex("-1")
@@ -78,6 +80,7 @@ class Graph {
         }
         return path.map { it.name }.reversed().toList()
     }
+
     /**
      * Пример
      *

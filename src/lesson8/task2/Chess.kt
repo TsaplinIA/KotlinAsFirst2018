@@ -260,7 +260,7 @@ fun knightMoveNumber(start: Square, end: Square): Int = tableForKnight().bfs(sta
  */
 fun knightTrajectory(start: Square, end: Square): List<Square> =
         tableForKnight()
-                .bfsWithList(Graph.Vertex(start.notation()), Graph.Vertex(end.notation()))
+                .bfsWithList(start.notation(), end.notation())
                 .map { square(it) }
 
 fun knightCan(start: Square): List<Square> = mutableListOf(
