@@ -3,7 +3,6 @@
 package lesson8.task2
 
 import lesson8.task3.Graph
-import java.awt.Point
 import java.lang.IllegalArgumentException
 import kotlin.math.abs
 import kotlin.math.max
@@ -41,7 +40,7 @@ fun boolToInt(b: Boolean) = Math.abs(b.toString().length - 5)
  */
 fun square(notation: String): Square =
         if (!Regex("[a-h][1-8]").matches(notation)) throw IllegalArgumentException()
-        else Square((notation[0] - 'a') + 1, notation[1].toString().toInt())
+        else Square(notation[0] - 'a' + 1, notation[1] - '0')
 
 /**
  * Простая
