@@ -4,6 +4,7 @@ package lesson9.task2
 
 import lesson9.task1.Matrix
 import lesson9.task1.createMatrix
+import kotlin.math.min
 
 // Все задачи в этом файле требуют наличия реализации интерфейса "Матрица" в Matrix.kt
 
@@ -65,43 +66,7 @@ operator fun Matrix<Int>.plus(other: Matrix<Int>): Matrix<Int> {
  *  a a a a a
  *  a a a a a
  */
-fun generateSpiral(height: Int, width: Int): Matrix<Int> {
-    val g = createMatrix(height, width, 0)
-    val rep = height / 2 + height % 2
-    var col = 0
-    var row = 0
-    var number = 1
-    repeat(rep) {
-        val repW = width - 2 * col - 1
-        val repH = height - 2 * row - 1
-        repeat(repW) {
-            g[col, row] = number
-            number++
-            row++
-        }
-        if (repH != 0) {
-            repeat(repH) {
-                g[col, row] = number
-                number++
-                col++
-            }
-            repeat(repW) {
-                g[col, row] = number
-                number++
-                row--
-            }
-            repeat(repH) {
-                g[col, row] = number
-                number++
-                col--
-            }
-        }
-        g[col, row] = if (col == 0 && row == 0) 1 else g[col, row - 1] + 1
-        col++
-        row++
-    }
-    return g
-}
+fun generateSpiral(height: Int, width: Int): Matrix<Int> = TODO()
 
 /**
  * Сложная
@@ -377,3 +342,7 @@ fun fifteenGameMoves(matrix: Matrix<Int>, moves: List<Int>): Matrix<Int> = TODO(
  * Перед решением этой задачи НЕОБХОДИМО решить предыдущую
  */
 fun fifteenGameSolution(matrix: Matrix<Int>): List<Int> = TODO()
+
+fun main(args: Array<String>) {
+    print(generateSpiral(5, 3))
+}
