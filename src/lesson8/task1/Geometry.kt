@@ -108,27 +108,9 @@ data class Segment(val begin: Point, val end: Point) {
  * Дано множество точек. Вернуть отрезок, соединяющий две наиболее удалённые из них.
  * Если в множестве менее двух точек, бросить IllegalArgumentException
  */
-fun diameter(vararg points: Point): Segment =
-        points.withIndex().flatMap {
-            if (points.size < 2) throw IllegalArgumentException()
-            smartConnect(it, points.withIndex().toList()).map { Segment(it.first, it.second) }
-        }.maxBy { it.length }!!
-
-fun <E> smartConnect(obj: IndexedValue<E>, objArr: List<IndexedValue<E>>): List<Pair<E, E>> {
-    val resList = mutableListOf<Pair<E, E>>()
-    for ((index, value) in objArr) if (obj.index != index) resList.add(obj.value to value)
-    return resList
-}
-//{
-//    val pointsList = points.toMutableList()
-//    val segmentList = mutableListOf<Segment>()
-//    if (points.size < 2) throw IllegalArgumentException()
-//    repeat(points.size - 1) {
-//        for (i in 1..pointsList.lastIndex) segmentList.add(Segment(pointsList[0], pointsList[i]))
-//        pointsList.removeAt(0)
-//    }
-//    return segmentList.maxBy { it.length }!!
-//}
+fun diameter(vararg points: Point): Segment = points
+        .flatMap { from -> points.map { to -> Segment(from, to) } }
+        .sortedBy { -it.begin.distance(it.end) }[0]
 
 /**
  * Простая
@@ -216,22 +198,13 @@ fun bisectorByPoints(a: Point, b: Point): Line {
  */
 fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> = circles
         .withIndex()
-        .flatMap {
-            if (circles.size < 2) throw IllegalArgumentException()
-            smartConnect(it, circles.withIndex().toList())
-        }
-        .minBy { it.first.distance(it.second) }!!
-//} }
-//{
-//    if (circles.size < 2) throw IllegalArgumentException()
-//    val cirList = circles.toMutableList()
-//    val pList = mutableListOf<Pair<Circle, Circle>>()
-//    repeat(circles.size - 1) {
-//        for (i in 1..cirList.lastIndex) pList.add(cirList[0] to cirList[i])
-//        cirList.removeAt(0)
-//    }
-//    return pList.minBy { it.first.distance(it.second) }!!
-//}
+        .flatMap { (index, value) ->
+            circles
+                    .withIndex()
+                    .filter { it.index != index }
+                    .map { Pair(value, it.value) }
+        }.minBy { it.first.distance(it.second) }!!
+
 
 /**
  * Сложная
@@ -259,19 +232,3 @@ fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
  * соединяющий две самые удалённые точки в данном множестве.
  */
 fun minContainingCircle(vararg points: Point): Circle = TODO()
-//{
-//    val pointsList = points.toMutableList()
-//    when (points.size) {
-//        0 -> throw IllegalArgumentException()
-//        1 -> return Circle(points[0], 0.0)
-//        2 -> return circleByDiameter(Segment(points[0], points[1]))
-//    }
-//    val n = points.size// # число точек
-//    val minX = pointsList.sortedBy { it.x }.first().x
-//    val p = pointsList.filter { it.x == minX }.sortedBy { it.y }.first()
-//    //P = range(n) # список номеров точек
-//    for (i in 1..n) {
-//        print("")
-//    }
-//    return Circle(Point(0.0, 0.0), 123.0)
-//}

@@ -2,9 +2,6 @@
 
 package lesson9.task2
 
-import lesson1.task1.numberRevert
-import lesson8.task2.Square
-import lesson8.task2.bishopTrajectory
 import lesson9.task1.Matrix
 import lesson9.task1.createMatrix
 
@@ -68,47 +65,43 @@ operator fun Matrix<Int>.plus(other: Matrix<Int>): Matrix<Int> {
  *  a a a a a
  *  a a a a a
  */
-fun generateSpiral(height: Int, width: Int): Matrix<Int> = TODO()
-//{
-//    val g = createMatrix(height, width, 0)
-//    val rep = height / 2 + height % 2
-//    var col = 0
-//    var row = 0
-//    var number = 1
-//    repeat(1) {
-//        val rep2 = width - 2 * col - 1
-//        val rep3 = height - 2 * row - 1
-//        repeat(rep2) {
-//            g[col, row] = number
-//            number++
-//            row++
-//        }
-//        if (rep3 != 0) {
-//            repeat(rep3) {
-//                g[col, row] = number
-//                number++
-//                col++
-//            }
-//            repeat(rep2) {
-//                g[col, row] = number
-//                number++
-//                row--
-//            }
-//            repeat(rep2) {
-//                g[col, row] = number
-//                number++
-//                col--
-//            }
-//        }
-//        print(col)
-//        print(row)
-//        g[col, row] = if (col == 0 && row == 0) 1 else g[col, row - 1] + 1
-//        col++
-//        row++
-//    }
-//    return g
-//}
-//goToSpiral(createMatrix(height, width, 0), 1, 0)
+fun generateSpiral(height: Int, width: Int): Matrix<Int> {
+    val g = createMatrix(height, width, 0)
+    val rep = height / 2 + height % 2
+    var col = 0
+    var row = 0
+    var number = 1
+    repeat(rep) {
+        val repW = width - 2 * col - 1
+        val repH = height - 2 * row - 1
+        repeat(repW) {
+            g[col, row] = number
+            number++
+            row++
+        }
+        if (repH != 0) {
+            repeat(repH) {
+                g[col, row] = number
+                number++
+                col++
+            }
+            repeat(repW) {
+                g[col, row] = number
+                number++
+                row--
+            }
+            repeat(repH) {
+                g[col, row] = number
+                number++
+                col--
+            }
+        }
+        g[col, row] = if (col == 0 && row == 0) 1 else g[col, row - 1] + 1
+        col++
+        row++
+    }
+    return g
+}
 
 /**
  * Сложная
@@ -124,7 +117,13 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> = TODO()
  *  1  2  2  2  2  1
  *  1  1  1  1  1  1
  */
-fun generateRectangles(height: Int, width: Int): Matrix<Int> = TODO()//goToSpiral(createMatrix(height, width, 0), 0, 1)
+fun generateRectangles(height: Int, width: Int): Matrix<Int> {
+    val g = createMatrix(height, width, 1)
+    for (i in 0 until height)
+        for (j in 0 until width)
+            g[i, j] += listOf(i, j, height - i - 1, width - j - 1).min()!!
+    return g
+}
 
 /**
  * Сложная
@@ -139,7 +138,25 @@ fun generateRectangles(height: Int, width: Int): Matrix<Int> = TODO()//goToSpira
  * 10 13 16 18
  * 14 17 19 20
  */
-fun generateSnake(height: Int, width: Int): Matrix<Int> = TODO()
+fun generateSnake(height: Int, width: Int): Matrix<Int> {
+    val g = createMatrix(height, width, 0)
+    for (i in 0 until height)
+        for (j in 0 until width) {
+            val before = try {
+                g[i - 1, j + 1]
+            } catch (e: IndexOutOfBoundsException) {
+                0
+            }
+            g[i, j] = if (before == 0)
+                when {
+                    i == 0 && j == 0 -> 1
+                    i == 0 -> g[i, j - 1] + 1 + listOf(height - 1, width - 1, j - 1, height - i).min()!!
+                    else -> g[i - 1, j] + 1 + listOf(height - 1, width - 1, j, height - i).min()!!
+                }
+            else before + 1
+        }
+    return g
+}
 
 /**
  * Средняя
@@ -155,11 +172,10 @@ fun generateSnake(height: Int, width: Int): Matrix<Int> = TODO()
 fun <E> rotate(matrix: Matrix<E>): Matrix<E> {
     if (matrix.width != matrix.height) throw IllegalArgumentException()
     val g = transpose(matrix)
-    val e = matrix
-    for (i in 0 until e.height)
-        for (j in 0 until e.width)
-            e[i, j] = g[i, e.width - 1 - j]
-    return e
+    for (i in 0 until matrix.height)
+        for (j in 0 until matrix.width)
+            matrix[i, j] = g[i, matrix.width - 1 - j]
+    return matrix
 }
 
 /**
@@ -175,7 +191,25 @@ fun <E> rotate(matrix: Matrix<E>): Matrix<E> {
  * 1 2 3
  * 3 1 2
  */
-fun isLatinSquare(matrix: Matrix<Int>): Boolean = TODO()
+fun isLatinSquare(matrix: Matrix<Int>): Boolean {
+    if (matrix.width != matrix.height) return false
+    var normalP = 0
+    var normalU = 1
+    for (i in 1..matrix.width) {
+        normalU *= i
+        normalP += i
+    }
+    for (w in 0 until matrix.width) {
+        var umn = 1
+        var pl = 0
+        for (h in 0 until matrix.height) {
+            umn *= matrix[h, w]
+            pl += matrix[h, w]
+        }
+        if (umn != normalU || pl != normalP) return false
+    }
+    return true
+}
 
 /**
  * Средняя
@@ -343,7 +377,3 @@ fun fifteenGameMoves(matrix: Matrix<Int>, moves: List<Int>): Matrix<Int> = TODO(
  * Перед решением этой задачи НЕОБХОДИМО решить предыдущую
  */
 fun fifteenGameSolution(matrix: Matrix<Int>): List<Int> = TODO()
-
-fun main(args: Array<String>) {
-    print(bishopTrajectory(Square(5, 7), Square(2, 2)))
-}
